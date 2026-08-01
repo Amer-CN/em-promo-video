@@ -50,9 +50,11 @@ UI 录制：scripts/record-ui.mjs（Playwright，EM_DEMO_MODE=1 强制）
 - fit 语义：cover=铺满裁剪 / contain=完整包含 / focus=取 focusRect 区域铺满（横屏录屏常用）。
 - 素材 path：scan-assets 只输出 `public/` 相对路径（staticFile 可加载）；public 外文件直接报错退出（提示建 junction），绝不静默输出渲染不了的绝对路径；渲染端 resolveAssetSrc 对盘符路径直接 throw。
 - HTML 素材用官方 `<IFrame>` 组件渲染，其内置 delayRender 等待加载；**不要**再手写 delayRender，否则与官方机制冲突导致渲染超时。
-- 字幕：底部安全区（160px）+ 其上 15% 画布高度内不放字（NO_TEXT_ZONE_FRACTION 在 design/tokens.ts）；同一时刻只显示一组（2–4 字单行居中），组间 3 帧快速淡入切换，groupChars 按标点硬切→4 字上限（避免拆双字词）→单字合并保底。
+- 字幕：底部安全区（160px）+ 其上 15% 画布高度内不放字（NO_TEXT_ZONE_FRACTION 在 design/tokens.ts）；同一时刻只显示一组（2–4 字单行居中），组间 3 帧快速淡入切换，groupChars 策略：标点硬切→ASCII 整词保留→3–4 字优先（剩余 5 取 3 防尾孤儿）→单字合并保底（`src/utils/groupChars.ts`，有单元测试）。
+  - **已知限制**：Subtitle 用 `whiteSpace: nowrap`，超长组会在 x 方向溢出画布（左右 padding 96px）；EDL 侧应保证单句 ≤ 12 字（≤3 组），超出需拆句或换行方案（待做）。
 - **脱敏红线**：`scripts/record-ui.mjs` 必须 `EM_DEMO_MODE=1` 才执行（防真实客户名/金额录进要发布的视频），任何情况下不得绕过。
 - EDL 的 meta.voiceoverDurationSec（可选）：一旦设置，校验强制「时间轴总时长 ≥ 配音时长」，接入 TTS 后先算配音时长再排时间轴。
 - scdet 阈值 0.15 是录屏的猜测值，真实素材到位后需实测调参（`--scene-threshold`）。
+
 
 

@@ -22,6 +22,20 @@ const root = join(__dirname, "..");
 const target = join(root, "node_modules", "@remotion", "bundler", "dist", "copy-dir.js");
 
 const MARKER = "// [em-promo-video patch]";
+
+// Hard pin: this patch is written and verified against Remotion 4.0.499.
+// If the dependency is bumped, this guard fails loudly instead of silently
+// patching the wrong code.
+const PINNED_REMOTION = "4.0.499";
+const remotionPkg = JSON.parse(readFileSync(join(root, "node_modules", "remotion", "package.json"), "utf8"));
+if (remotionPkg.version !== PINNED_REMOTION) {
+  console.error(
+    `patch-remotion: expected remotion ${PINNED_REMOTION} but found ${remotionPkg.version}. ` +
+      `Re-verify the copy-dir.js needle before re-pinning.`,
+  );
+  process.exit(1);
+}
+
 const original = readFileSync(target, "utf8");
 
 if (original.includes(MARKER)) {
@@ -41,3 +55,4 @@ if (!original.includes(needle)) {
 
 writeFileSync(target, original.replace(needle, replacement), "utf8");
 console.log("patch-remotion: patched", target);
+

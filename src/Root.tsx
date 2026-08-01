@@ -1,14 +1,16 @@
 import {Composition, type CalculateMetadataFunction} from "remotion";
 import {Promo, type PromoProps} from "./compositions/Promo";
 import {CANVAS} from "./design/tokens";
+import {edlSchema, manifestEntrySchema} from "./schemas/edl";
+// Static imports resolve at bundle time (webpack inlines the JSON) — no
+// node:fs involved, so this is safe in the browser bundle. These become the
+// Studio-preview defaults; render-edl.mjs props override them at render time.
+import edlJson from "../content/edl.json";
+import manifestJson from "../content/manifest.json";
 
-/**
- * Content is injected via props (defaultProps provide the initial bundle-time
- * values; the CLI wrapper scripts/render-edl.mjs resolves an EDL path in node
- * and passes the parsed content). The browser bundle never touches node:fs —
- * calculateMetadata runs inside the renderer's browser page, so reading files
- * there is impossible by design.
- */
+const defaultEdl = edlSchema.parse(edlJson);
+const defaultManifest = manifestEntrySchema.array().parse(manifestJson);
+
 const calculateMetadata: CalculateMetadataFunction<PromoProps> = async ({props}) => {
   if (!props.edl) {
     throw new Error(
@@ -29,7 +31,7 @@ export const RemotionRoot: React.FC = () => {
     <Composition
       id="Promo"
       component={Promo}
-      defaultProps={{edlPath: "content/edl.json", manifestPath: "content/manifest.json"}}
+      defaultProps={{edl: defaultEdl, manifest: defaultManifest}}
       calculateMetadata={calculateMetadata}
       durationInFrames={300}
       fps={CANVAS.fps}

@@ -30,6 +30,25 @@
     "hasAudio": null
   },
   {
+    "id": "grid_mp4",
+    "path": "sample/grid.mp4",
+    "type": "video",
+    "durationSec": 4,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 4
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/grid_mp4__0.jpg"
+    ]
+  },
+  {
     "id": "quadrants_mp4",
     "path": "sample/quadrants.mp4",
     "type": "video",

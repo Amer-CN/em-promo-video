@@ -1,4 +1,3 @@
-import {useMemo} from "react";
 import {Sequence, useCurrentFrame} from "remotion";
 import {MediaClip} from "../components/MediaClip";
 import {Subtitle} from "../components/Subtitle";
@@ -22,6 +21,9 @@ export type PromoProps = {
 };
 
 export const Promo: React.FC<PromoProps> = ({edl, manifest}) => {
+  // NOTE: no hooks may be called before the early return below — doing so
+  // would violate rules-of-hooks when edl goes from undefined to defined
+  // (e.g. Studio loading defaultProps). The map is cheap; rebuild each render.
   if (!edl || !manifest) {
     return (
       <div
@@ -40,10 +42,7 @@ export const Promo: React.FC<PromoProps> = ({edl, manifest}) => {
       </div>
     );
   }
-  const assetIndex: Map<string, ManifestEntry> = useMemo(
-    () => new Map(manifest.map((m) => [m.id, m])),
-    [manifest],
-  );
+  const assetIndex: Map<string, ManifestEntry> = new Map(manifest.map((m) => [m.id, m]));
 
   return (
     <div style={{width: "100%", height: "100%", backgroundColor: "#0E0E10"}}>
@@ -77,5 +76,6 @@ const ClipSubtitles: React.FC<{clip: Clip; subtitles: SubtitleType[]}> = ({clip,
   if (!active) return null;
   return <Subtitle text={active.text} windowStartSec={active.start} windowEndSec={active.end} />;
 };
+
 
 

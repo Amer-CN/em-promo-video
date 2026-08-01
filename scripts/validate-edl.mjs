@@ -99,13 +99,34 @@ function main() {
       }
     }
 
+    if (clip.kenBurns !== undefined) {
+      if (typeof clip.kenBurns.from !== "number" || !(clip.kenBurns.from >= 1)) fail(`${where}.kenBurns.from must be a number >= 1 (render path does not run zod)`);
+      if (typeof clip.kenBurns.to !== "number" || !(clip.kenBurns.to >= 1)) fail(`${where}.kenBurns.to must be a number >= 1 (render path does not run zod)`);
+      // kenBurns only applies to focus; cover/contain video ignores it silently.
+      if (clip.fit !== "focus") warn(`${where}: kenBurns has no effect when fit=${clip.fit} (only focus applies it)`);
+    }
+
     if (clip.subtitles !== undefined) {
       if (!Array.isArray(clip.subtitles)) fail(`${where}: subtitles must be an array`);
-      else for (const [j, sub] of clip.subtitles.entries()) {
-        if (!sub || typeof sub.text !== "string" || !sub.text) fail(`${where}.subtitles[${j}]: text is required`);
-        if (!isNonNegativeNumber(sub.start)) fail(`${where}.subtitles[${j}]: start must be a non-negative number`);
-        if (typeof sub.end !== "number" || !(sub.end > sub.start)) fail(`${where}.subtitles[${j}]: end must be greater than start`);
-        if (!(sub.end <= clip.duration + EPS)) fail(`${where}.subtitles[${j}]: end (${sub.end}) exceeds clip duration (${clip.duration})`);
+      else {
+        for (const [j, sub] of clip.subtitles.entries()) {
+          if (!sub || typeof sub.text !== "string" || !sub.text) fail(`${where}.subtitles[${j}]: text is required`);
+          if (!isNonNegativeNumber(sub.start)) fail(`${where}.subtitles[${j}]: start must be a non-negative number`);
+          if (typeof sub.end !== "number" || !(sub.end > sub.start)) fail(`${where}.subtitles[${j}]: end must be greater than start`);
+          if (!(sub.end <= clip.duration + EPS)) fail(`${where}.subtitles[${j}]: end (${sub.end}) exceeds clip duration (${clip.duration})`);
+        }
+        // Overlap check: ClipSubtitles uses .find() which only shows the FIRST
+        // subtitle active at a frame — an overlapping later one is silently
+        // swallowed, so overlapping windows must be rejected.
+        const sorted = [...clip.subtitles].sort((a, b) => a.start - b.start);
+        for (let j = 1; j < sorted.length; j++) {
+          if (sorted[j].start < sorted[j - 1].end - EPS) {
+            fail(
+              `${where}: subtitles[${j}] start (${sorted[j].start}) overlaps previous end (${sorted[j - 1].end}) — ` +
+                `windows must not overlap (ClipSubtitles only shows the first match)`,
+            );
+          }
+        }
       }
     }
   }
@@ -186,4 +207,10 @@ function main() {
 }
 
 main();
+
+
+
+
+
+
 

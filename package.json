@@ -12,7 +12,9 @@
     "render": "remotion render",
     "record:ui": "node scripts/record-ui.mjs",
     "render:edl": "node scripts/render-edl.mjs",
-    "postinstall": "node scripts/patch-remotion.mjs"
+    "postinstall": "node scripts/patch-remotion.mjs",
+    "lint": "eslint src --max-warnings 0",
+    "test": "node --experimental-strip-types --test tests/groupChars.test.ts"
   },
   "dependencies": {
     "@remotion/canvas-capture": "4.0.499",
@@ -40,6 +42,10 @@
     "@types/node": "20.19.43",
     "@types/react": "18.3.31",
     "@types/react-dom": "18.3.7",
+    "@typescript-eslint/eslint-plugin": "^8.65.0",
+    "@typescript-eslint/parser": "^8.65.0",
+    "eslint": "^10.8.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "playwright": "^1.62.1",
     "typescript": "5.9.3"
   }

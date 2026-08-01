@@ -131,3 +131,47 @@ public/sample/            smoke 测试素材
 - doctor / typecheck / validate:edl 全绿。
 - 抽帧全部存 `output/review/`：focus-mid、focus2-mid、kb-first、kb-last、g1a-g3b（subtitle）、sub-*。
 - 全部为「看画面后写 PASS」（主色/bbox/diffPx 程序化人眼替代，已逐张说明看到了什么）。
+
+---
+
+## 第四轮修复记录（2026-08-01）
+
+### B-1 Promo hooks 规则 —— PASS
+- 删 useMemo 改普通 `new Map()`（早退分支前无 hook，消除 edl 从无到有的 hook 数量变化）。
+- 装 eslint + eslint-plugin-react-hooks + TS 插件，`rules-of-hooks: error`、`exhaustive-deps: warn`、`--max-warnings 0`；`npm run lint` 纳入验收（全绿）。
+
+### B-2 focus/kenBurns 证据重做 —— PASS（读到具体坐标）
+- 新素材 `public/sample/grid.mp4`：四象限底色（深色避免压缩糊）+ 10x10 网格线 + 每格左上角坐标文字（BR-r-c），1920x1080@30fps。
+- focus 验收（`content/edl-focus-grid.json`，focusRect=BR 象限）抽帧 `output/review/focus-grid-mid.png`：
+  - 实测画布竖线在 x=200/542/883，间距 341.3px；
+  - 数学映射：画布 x=200/542/883 ↔ 源 x=1344/1440/1536（BR 象限竖线 c3/c5/c7）；
+  - **读到的坐标范围：BR-c3 ~ BR-c7**（源 x 1288-1592），中心 c5 对齐画布中心（x=542）。
+- kenBurns 验收（`content/edl-focus-grid-kb.json`，kb 1.0→1.06）抽帧 `kb-grid-first.png` / `kb-grid-last.png`：
+  - first（kb=1.0）：竖线 200/542/884，间距 342px；
+  - last（kb=1.06）：竖线 180/542/903，间距 362px；
+  - **视野变窄**（线距 342→362px，scale 3.556→3.769，可见源 x 1288-1592→1297-1583）；
+  - **中心线恒在画布 x=542** —— 焦点不漂移。
+
+### B-3 Studio 恢复 —— PASS
+- `Root.tsx` 静态 import `content/edl.json` + `manifest.json`，zod parse 后作 defaultProps（bundle 期完成、不碰 node:fs）；render-edl.mjs props 覆盖能力保留。
+- `npm run studio` 启动成功（Server ready + Built），Playwright 截图 `output/review/studio-preview.png`：BODY 含 Promo 合成、时间轴 3 clip（clip-recording/clip-screenshot/clip-html）、无 console 错误。
+
+### B-4 groupChars 重设计 —— PASS（单元测试 7/7）
+- 删 `isTwoCharWord` 死代码（`/^[\u4e00-\u9fff]{2}$/` 对任意汉字对恒真，白名单永不触发）。
+- 新策略（`src/utils/groupChars.ts`）：标点硬切（，。！？、；：留段尾）→ ASCII 按空白/分隔符切且整词保留 → CJK 段 3-4 字优先（剩余 5 取 3 防尾孤儿）→ 单字合并保底。
+- 单元测试（node:test，`tests/groupChars.test.ts`）7/7 全绿：`欢迎使用本产品`→[欢迎使用,本产品]、`三步完成配置`→[三步完成,配置]、`马上开始吧`→[马上开,始吧]、`本月新增合同额，同比增长 32%`→[本月新增,合同额，,同比增长,32%]、空串→[]、`好`→[好]、纯英文串整词保留。
+- **bbox 矛盾查清**：推演「最宽 3 字=192px」错在忽略 4 字组存在；实测字宽恒 61.3px（4 字 246px / 3 字 184px / 2 字 121px），渲染与记录无矛盾。
+
+### B-5 小项 —— PASS
+1. patch-remotion：确认 needle 不匹配时 `console.error + exit(1)`（报错退出非静默跳过）；加 remotion 版本 pin 4.0.499（升级时显式失败）。
+2. validate-edl 加同 clip 字幕重叠校验（`ClipSubtitles` 用 `.find()` 只显示首个匹配，重叠会被静默吞）——实测重叠 fail exit 1。
+3. AGENTS.md 记录 Subtitle `whiteSpace: nowrap` 溢出已知限制（单句 ≤12 字）。
+
+### 独立审查（review skill）后补修
+- medium：validate-edl 补 `kenBurns.from/to >= 1` 校验（render-edl 路径不跑 zod）——实测 kb=0.8 fail exit 1。
+- low：validate-edl 对非 focus 的 kenBurns 加 warn（静默忽略风险）。
+
+### 验收状态
+- lint / test(7/7) / doctor / typecheck / validate:edl 全绿；回归渲染 subtitle v3 成功（180/180 Encoded）。
+- 抽帧全部存 `output/review/`：focus-grid-mid、kb-grid-first、kb-grid-last、studio-preview、v2g1-v2g6（subtitle v2 bbox）。
+- B-2 结论均写出具体坐标数字，非「主色为黄」类描述。

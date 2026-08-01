@@ -1,0 +1,16 @@
+{
+  "meta": { "width": 1080, "height": 1920, "fps": 30, "title": "focus-grid-acceptance" },
+  "clips": [
+    {
+      "id": "focus-grid",
+      "assetId": "grid_mp4",
+      "type": "video",
+      "sourceIn": 0,
+      "sourceOut": 2,
+      "timelineStart": 0,
+      "duration": 2,
+      "fit": "focus",
+      "focusRect": { "x": 0.5, "y": 0.5, "w": 0.5, "h": 0.5 }
+    }
+  ]
+}
