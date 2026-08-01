@@ -1,17 +1,482 @@
 [
   {
-    "id": "black_png",
-    "path": "sample/black.png",
-    "type": "image",
-    "durationSec": null,
-    "width": 1920,
+    "id": "3_webm",
+    "path": "raw/3.webm",
+    "type": "video",
+    "durationSec": 42.582,
+    "width": 2160,
     "height": 1080,
-    "fps": null,
-    "hasAudio": null
+    "fps": 1000,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 0.275
+      },
+      {
+        "start": 0.275,
+        "end": 2.653
+      },
+      {
+        "start": 2.653,
+        "end": 4.444
+      },
+      {
+        "start": 4.444,
+        "end": 6.608
+      },
+      {
+        "start": 6.608,
+        "end": 11.059
+      },
+      {
+        "start": 11.059,
+        "end": 21.119
+      },
+      {
+        "start": 21.119,
+        "end": 23.463
+      },
+      {
+        "start": 23.463,
+        "end": 26.151
+      },
+      {
+        "start": 26.151,
+        "end": 28.324
+      },
+      {
+        "start": 28.324,
+        "end": 31.083
+      },
+      {
+        "start": 31.083,
+        "end": 33.292
+      },
+      {
+        "start": 33.292,
+        "end": 42.582
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/3_webm__0.jpg",
+      "output/thumbnails/3_webm__1.jpg",
+      "output/thumbnails/3_webm__2.jpg",
+      "output/thumbnails/3_webm__3.jpg",
+      "output/thumbnails/3_webm__4.jpg",
+      "output/thumbnails/3_webm__5.jpg",
+      "output/thumbnails/3_webm__6.jpg",
+      "output/thumbnails/3_webm__7.jpg",
+      "output/thumbnails/3_webm__8.jpg",
+      "output/thumbnails/3_webm__9.jpg",
+      "output/thumbnails/3_webm__10.jpg",
+      "output/thumbnails/3_webm__11.jpg"
+    ]
   },
   {
-    "id": "card_html",
-    "path": "sample/card.html",
+    "id": "4_webm",
+    "path": "raw/4.webm",
+    "type": "video",
+    "durationSec": 56.874,
+    "width": 2160,
+    "height": 1080,
+    "fps": 1000,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 0.624
+      },
+      {
+        "start": 0.624,
+        "end": 5.354
+      },
+      {
+        "start": 5.354,
+        "end": 12.13
+      },
+      {
+        "start": 12.13,
+        "end": 15.174
+      },
+      {
+        "start": 15.174,
+        "end": 17.639
+      },
+      {
+        "start": 17.639,
+        "end": 19.893
+      },
+      {
+        "start": 19.893,
+        "end": 22.29
+      },
+      {
+        "start": 22.29,
+        "end": 30.623
+      },
+      {
+        "start": 30.623,
+        "end": 36.838
+      },
+      {
+        "start": 36.838,
+        "end": 39.235
+      },
+      {
+        "start": 39.235,
+        "end": 45.874
+      },
+      {
+        "start": 45.874,
+        "end": 56.874
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/4_webm__0.jpg",
+      "output/thumbnails/4_webm__1.jpg",
+      "output/thumbnails/4_webm__2.jpg",
+      "output/thumbnails/4_webm__3.jpg",
+      "output/thumbnails/4_webm__4.jpg",
+      "output/thumbnails/4_webm__5.jpg",
+      "output/thumbnails/4_webm__6.jpg",
+      "output/thumbnails/4_webm__7.jpg",
+      "output/thumbnails/4_webm__8.jpg",
+      "output/thumbnails/4_webm__9.jpg",
+      "output/thumbnails/4_webm__10.jpg",
+      "output/thumbnails/4_webm__11.jpg"
+    ]
+  },
+  {
+    "id": "5_webm",
+    "path": "raw/5.webm",
+    "type": "video",
+    "durationSec": 22.35,
+    "width": 2160,
+    "height": 1080,
+    "fps": 30,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 2.012
+      },
+      {
+        "start": 2.012,
+        "end": 8.033
+      },
+      {
+        "start": 8.033,
+        "end": 10.867
+      },
+      {
+        "start": 10.867,
+        "end": 15.849
+      },
+      {
+        "start": 15.849,
+        "end": 19.651
+      },
+      {
+        "start": 19.651,
+        "end": 22.35
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/5_webm__0.jpg",
+      "output/thumbnails/5_webm__1.jpg",
+      "output/thumbnails/5_webm__2.jpg",
+      "output/thumbnails/5_webm__3.jpg",
+      "output/thumbnails/5_webm__4.jpg",
+      "output/thumbnails/5_webm__5.jpg"
+    ]
+  },
+  {
+    "id": "6_webm",
+    "path": "raw/6.webm",
+    "type": "video",
+    "durationSec": 69.273,
+    "width": 2160,
+    "height": 1080,
+    "fps": 1000,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 1.128
+      },
+      {
+        "start": 1.128,
+        "end": 29.333
+      },
+      {
+        "start": 29.333,
+        "end": 35.475
+      },
+      {
+        "start": 35.475,
+        "end": 39.374
+      },
+      {
+        "start": 39.374,
+        "end": 43.75
+      },
+      {
+        "start": 43.75,
+        "end": 51.28
+      },
+      {
+        "start": 51.28,
+        "end": 54.288
+      },
+      {
+        "start": 54.288,
+        "end": 61.903
+      },
+      {
+        "start": 61.903,
+        "end": 69.273
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/6_webm__0.jpg",
+      "output/thumbnails/6_webm__1.jpg",
+      "output/thumbnails/6_webm__2.jpg",
+      "output/thumbnails/6_webm__3.jpg",
+      "output/thumbnails/6_webm__4.jpg",
+      "output/thumbnails/6_webm__5.jpg",
+      "output/thumbnails/6_webm__6.jpg",
+      "output/thumbnails/6_webm__7.jpg",
+      "output/thumbnails/6_webm__8.jpg"
+    ]
+  },
+  {
+    "id": "7_webm",
+    "path": "raw/7.webm",
+    "type": "video",
+    "durationSec": 26.732,
+    "width": 2160,
+    "height": 1080,
+    "fps": 1000,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 13.164
+      },
+      {
+        "start": 13.164,
+        "end": 17.699
+      },
+      {
+        "start": 17.699,
+        "end": 25.266
+      },
+      {
+        "start": 25.266,
+        "end": 26.732
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/7_webm__0.jpg",
+      "output/thumbnails/7_webm__1.jpg",
+      "output/thumbnails/7_webm__2.jpg",
+      "output/thumbnails/7_webm__3.jpg"
+    ]
+  },
+  {
+    "id": "8_20260724_13342373_mp4",
+    "path": "raw/8_20260724_13342373.mp4",
+    "type": "video",
+    "durationSec": 27.634,
+    "width": 2160,
+    "height": 1080,
+    "fps": 28.407,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 7.041
+      },
+      {
+        "start": 7.041,
+        "end": 8.977
+      },
+      {
+        "start": 8.977,
+        "end": 11.194
+      },
+      {
+        "start": 11.194,
+        "end": 22.107
+      },
+      {
+        "start": 22.107,
+        "end": 23.656
+      },
+      {
+        "start": 23.656,
+        "end": 27.634
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/8_20260724_13342373_mp4__0.jpg",
+      "output/thumbnails/8_20260724_13342373_mp4__1.jpg",
+      "output/thumbnails/8_20260724_13342373_mp4__2.jpg",
+      "output/thumbnails/8_20260724_13342373_mp4__3.jpg",
+      "output/thumbnails/8_20260724_13342373_mp4__4.jpg",
+      "output/thumbnails/8_20260724_13342373_mp4__5.jpg"
+    ]
+  },
+  {
+    "id": "8_webm",
+    "path": "raw/8.webm",
+    "type": "video",
+    "durationSec": 27.817,
+    "width": 2160,
+    "height": 1080,
+    "fps": 1000,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 7.042
+      },
+      {
+        "start": 7.042,
+        "end": 9
+      },
+      {
+        "start": 9,
+        "end": 11.2
+      },
+      {
+        "start": 11.2,
+        "end": 22.133
+      },
+      {
+        "start": 22.133,
+        "end": 23.625
+      },
+      {
+        "start": 23.625,
+        "end": 24.983
+      },
+      {
+        "start": 24.983,
+        "end": 27.817
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/8_webm__0.jpg",
+      "output/thumbnails/8_webm__1.jpg",
+      "output/thumbnails/8_webm__2.jpg",
+      "output/thumbnails/8_webm__3.jpg",
+      "output/thumbnails/8_webm__4.jpg",
+      "output/thumbnails/8_webm__5.jpg",
+      "output/thumbnails/8_webm__6.jpg"
+    ]
+  },
+  {
+    "id": "9_20260724_18101644_mp4",
+    "path": "raw/9_20260724_18101644.mp4",
+    "type": "video",
+    "durationSec": 58.291,
+    "width": 2176,
+    "height": 1080,
+    "fps": 30.605,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 36.987
+      },
+      {
+        "start": 36.987,
+        "end": 47.803
+      },
+      {
+        "start": 47.803,
+        "end": 54.566
+      },
+      {
+        "start": 54.566,
+        "end": 58.291
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/9_20260724_18101644_mp4__0.jpg",
+      "output/thumbnails/9_20260724_18101644_mp4__1.jpg",
+      "output/thumbnails/9_20260724_18101644_mp4__2.jpg",
+      "output/thumbnails/9_20260724_18101644_mp4__3.jpg"
+    ]
+  },
+  {
+    "id": "9_webm",
+    "path": "raw/9.webm",
+    "type": "video",
+    "durationSec": 58.333,
+    "width": 2176,
+    "height": 1080,
+    "fps": 120,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 36.999
+      },
+      {
+        "start": 36.999,
+        "end": 47.816
+      },
+      {
+        "start": 47.816,
+        "end": 54.532
+      },
+      {
+        "start": 54.532,
+        "end": 58.333
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/9_webm__0.jpg",
+      "output/thumbnails/9_webm__1.jpg",
+      "output/thumbnails/9_webm__2.jpg",
+      "output/thumbnails/9_webm__3.jpg"
+    ]
+  },
+  {
+    "id": "工程管家-Bedrock-设计原型_20260723_21325618_mp4",
+    "path": "raw/工程管家 · Bedrock 设计原型_20260723_21325618.mp4",
+    "type": "video",
+    "durationSec": 30.214,
+    "width": 2160,
+    "height": 1080,
+    "fps": 20.818,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 5.332
+      },
+      {
+        "start": 5.332,
+        "end": 8.598
+      },
+      {
+        "start": 8.598,
+        "end": 30.214
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/工程管家-Bedrock-设计原型_20260723_21325618_mp4__0.jpg",
+      "output/thumbnails/工程管家-Bedrock-设计原型_20260723_21325618_mp4__1.jpg",
+      "output/thumbnails/工程管家-Bedrock-设计原型_20260723_21325618_mp4__2.jpg"
+    ]
+  },
+  {
+    "id": "工程管家-Bedrock-设计原型_html",
+    "path": "raw/工程管家 · Bedrock 设计原型.html",
     "type": "html",
     "durationSec": null,
     "width": null,
@@ -20,80 +485,85 @@
     "hasAudio": null
   },
   {
-    "id": "demo-app_html",
-    "path": "sample/demo-app.html",
-    "type": "html",
-    "durationSec": null,
-    "width": null,
-    "height": null,
-    "fps": null,
-    "hasAudio": null
-  },
-  {
-    "id": "grid_mp4",
-    "path": "sample/grid.mp4",
+    "id": "工程管家-Bedrock-设计原型_webm",
+    "path": "raw/工程管家 · Bedrock 设计原型.webm",
     "type": "video",
-    "durationSec": 4,
-    "width": 1920,
+    "durationSec": 31.183,
+    "width": 2160,
     "height": 1080,
-    "fps": 30,
+    "fps": 1000,
     "hasAudio": false,
     "segments": [
       {
         "start": 0,
-        "end": 4
+        "end": 5.292
+      },
+      {
+        "start": 5.292,
+        "end": 8.596
+      },
+      {
+        "start": 8.596,
+        "end": 31.183
       }
     ],
     "thumbnails": [
-      "output/thumbnails/grid_mp4__0.jpg"
+      "output/thumbnails/工程管家-Bedrock-设计原型_webm__0.jpg",
+      "output/thumbnails/工程管家-Bedrock-设计原型_webm__1.jpg",
+      "output/thumbnails/工程管家-Bedrock-设计原型_webm__2.jpg"
     ]
   },
   {
-    "id": "quadrants_mp4",
-    "path": "sample/quadrants.mp4",
+    "id": "工程管家-Bedrock-设计原型2_webm",
+    "path": "raw/工程管家 · Bedrock 设计原型2.webm",
     "type": "video",
-    "durationSec": 4,
-    "width": 1920,
+    "durationSec": 22.131,
+    "width": 2160,
     "height": 1080,
-    "fps": 30,
+    "fps": 1000,
     "hasAudio": false,
     "segments": [
       {
         "start": 0,
-        "end": 4
+        "end": 1.772
+      },
+      {
+        "start": 1.772,
+        "end": 22.131
       }
     ],
     "thumbnails": [
-      "output/thumbnails/quadrants_mp4__0.jpg"
+      "output/thumbnails/工程管家-Bedrock-设计原型2_webm__0.jpg",
+      "output/thumbnails/工程管家-Bedrock-设计原型2_webm__1.jpg"
     ]
   },
   {
-    "id": "screenshot_png",
-    "path": "sample/screenshot.png",
-    "type": "image",
-    "durationSec": null,
-    "width": 1920,
-    "height": 1080,
-    "fps": null,
-    "hasAudio": null
-  },
-  {
-    "id": "video_mp4",
-    "path": "sample/video.mp4",
+    "id": "Stitch---Projects_webm",
+    "path": "raw/Stitch - Projects.webm",
     "type": "video",
-    "durationSec": 6,
-    "width": 1920,
+    "durationSec": 17.699,
+    "width": 2160,
     "height": 1080,
-    "fps": 30,
-    "hasAudio": true,
+    "fps": 120,
+    "hasAudio": false,
     "segments": [
       {
         "start": 0,
-        "end": 6
+        "end": 6.349
+      },
+      {
+        "start": 6.349,
+        "end": 11.483
+      },
+      {
+        "start": 11.483,
+        "end": 17.699
       }
     ],
     "thumbnails": [
-      "output/thumbnails/video_mp4__0.jpg"
+      "output/thumbnails/Stitch---Projects_webm__0.jpg",
+      "output/thumbnails/Stitch---Projects_webm__1.jpg",
+      "output/thumbnails/Stitch---Projects_webm__2.jpg"
     ]
   }
 ]

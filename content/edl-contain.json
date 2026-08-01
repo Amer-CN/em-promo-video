@@ -1,0 +1,16 @@
+{
+  "meta": { "width": 1080, "height": 1920, "fps": 30, "title": "contain-acceptance" },
+  "clips": [
+    {
+      "id": "contain-full",
+      "assetId": "5_webm",
+      "type": "video",
+      "sourceIn": 0,
+      "sourceOut": 3,
+      "timelineStart": 0,
+      "duration": 3,
+      "fit": "focus",
+      "focusRect": { "x": 0, "y": 0, "w": 1, "h": 1, "focusFit": "contain" }
+    }
+  ]
+}

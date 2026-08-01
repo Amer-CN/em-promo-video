@@ -11,7 +11,7 @@ const DEFAULT_INPUT = join(root, "public", "raw");
 const OUTPUT_FILE = join(root, "content", "manifest.json");
 const THUMB_DIR = join(root, "output", "thumbnails");
 
-const VIDEO_EXTS = new Set([".mp4", ".mov"]);
+const VIDEO_EXTS = new Set([".mp4", ".mov", ".webm"]);
 const IMAGE_EXTS = new Set([".png", ".jpg", ".jpeg"]);
 const HTML_EXTS = new Set([".html", ".htm"]);
 const SCAN_EXTS = new Set([...VIDEO_EXTS, ...IMAGE_EXTS, ...HTML_EXTS]);
@@ -30,12 +30,15 @@ function parseArgs(argv) {
 }
 
 function slugify(relPath) {
+  // Keep CJK so Chinese asset names produce readable ids (e.g. 工程管家_Bedrock...).
+  // Only whitespace / punctuation / runs of non-word chars collapse to a single "-".
   return relPath
     .replace(/\\/g, "/")
     .replace(/^\.\//, "")
-    .replace(/[^a-zA-Z0-9._/-]+/g, "-")
+    .replace(/[^\p{L}\p{N}._/-]+/gu, "-")
     .replace(/\/+/g, "__")
-    .replace(/\./g, "_");
+    .replace(/\./g, "_")
+    .replace(/^[-_]+|[-_]+$/g, "");
 }
 
 function probe(path) {
@@ -109,9 +112,19 @@ function sceneCuts(file, threshold) {
 /** Turn cut timestamps into contiguous segments covering [0, durationSec]. */
 function makeSegments(cuts, durationSec) {
   if (!(durationSec > 0)) return [];
+  // Merge cuts closer than MERGE_GAP: on real UI recordings scroll/popup
+  // flicker produces sub-second clusters (measured: 27 of 57 cuts at 0.15
+  // were <0.5s apart on a 69s clip). Treat a cluster as ONE scene change.
+  const MERGE_GAP = 1.0;
+  const merged = [];
+  for (const c of cuts) {
+    const last = merged[merged.length - 1];
+    if (last && c - last < MERGE_GAP) merged[merged.length - 1] = c;
+    else merged.push(c);
+  }
   const segs = [];
   let prev = 0;
-  for (const c of cuts) {
+  for (const c of merged) {
     if (c > prev + 0.01) segs.push({start: r3(prev), end: r3(c)});
     prev = c;
   }
@@ -263,6 +276,10 @@ async function main() {
 }
 
 main().catch((err) => { console.error(err); process.exit(1); });
+
+
+
+
 
 
 

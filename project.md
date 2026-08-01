@@ -175,3 +175,34 @@ public/sample/            smoke 测试素材
 - lint / test(7/7) / doctor / typecheck / validate:edl 全绿；回归渲染 subtitle v3 成功（180/180 Encoded）。
 - 抽帧全部存 `output/review/`：focus-grid-mid、kb-grid-first、kb-grid-last、studio-preview、v2g1-v2g6（subtitle v2 bbox）。
 - B-2 结论均写出具体坐标数字，非「主色为黄」类描述。
+
+---
+
+## 真实素材接入记录（2026-08-01）
+
+### 素材接入
+- 素材目录：`D:\Desktop\工程管家素材`（junction public/raw 已重指向；14 文件：7 段录屏 webm/mp4 + HTML 设计原型 + 原型录屏）。
+- scan-assets：VIDEO_EXTS 加 `.webm`（VFR 录屏）；slugify 保留中文（`\p{L}`），id 从 `-Bedrock-_webm` 修复为 `工程管家-Bedrock-设计原型_webm`。
+- 全部素材为横屏 2160x1080（宽扁 UI 录屏）、无音轨、多为 VFR（1000/1）。
+
+### focusFit: contain（新增模式）
+- 审查预告的竖屏放宽扁内容场景，用真实素材验证：
+  - **cover**（max 缩放）：2160x1080 投 1080x1920，只保留中间 28% 宽度（两侧各裁 36%），表格/导航被切；
+  - **contain**（min 缩放）：完整界面等比缩放居中（实测内容 y=710~1210，上下留白 710px），留白区可放标题/字幕。
+- 全链路：zod schema（focusRect.focusFit，默认 cover）、JSON Schema、MediaClip focusGeometry（mode 分支）、validate-edl 校验。
+
+### scdet 实测调参
+- 真实 6.webm（69s）阈值对比：0.1→64 切点、0.15→57（27 个 <0.5s 抖动）、0.2→47、0.3→19、0.4→7。
+- 结论：默认阈值 0.15→**0.3**；makeSegments 加 **<1s 切点合并**（滚动/弹窗抖动聚类）。重扫后 6_webm 58→9 段、3_webm 28→12、5_webm 12→6。
+
+### 第一版账本（content/edl-v1.json → output/promo-v1.mp4）
+- 3 clip / 12.1s / 1080x1920@30：
+  1. open-overview：工程管家原型 contain 全览 + 字幕「工程管家，您的工地管理助手」
+  2. action-recording：5_webm contain 操作 + 字幕「关键操作一目了然」「数据实时同步」
+  3. close-focus：5_webm cover 特写（focusRect 数据区）+ 字幕「从工地到云端」
+- 抽帧验收（output/review/v1a-*.png）：open 内容 y690-1220 居中、action y710-1450、close 特写区有实质内容（边缘 480），字幕在留白区。
+
+### 待定项（需真实素材进一步定）
+- focusRect 精确坐标：当前用全览/粗特写，需对着界面定重点区域；
+- 留白区装饰：contain 的上下留白当前是纯黑背景，标题/配色待定；
+- 字幕节奏与文案：当前为占位文案，需按真实功能点定。

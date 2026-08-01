@@ -1,0 +1,15 @@
+{
+  "meta": { "width": 1080, "height": 1920, "fps": 30, "title": "real-asset-smoke" },
+  "clips": [
+    {
+      "id": "real-5",
+      "assetId": "5_webm",
+      "type": "video",
+      "sourceIn": 0,
+      "sourceOut": 3,
+      "timelineStart": 0,
+      "duration": 3,
+      "fit": "cover"
+    }
+  ]
+}

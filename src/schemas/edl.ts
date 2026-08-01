@@ -17,6 +17,14 @@ export const focusRectSchema = z
     y: z.number().min(0).max(1),
     w: z.number().min(0).max(1),
     h: z.number().min(0).max(1),
+    /**
+     * How to fit the focusRect region into the canvas:
+     * - "cover": max(scaleX, scaleY) — region fills canvas, excess cropped
+     *            (good for tall/narrow regions)
+     * - "contain": min(scaleX, scaleY) — whole region visible, letterboxed
+     *            (good for wide/flat UI regions like tables/lists/toolbars)
+     */
+    focusFit: z.enum(["cover", "contain"]).default("cover"),
   })
   .strict();
 
@@ -91,6 +99,7 @@ export const manifestEntrySchema = z
   .strict();
 
 export type ManifestEntry = z.infer<typeof manifestEntrySchema>;
+
 
 
 

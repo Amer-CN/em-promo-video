@@ -96,6 +96,9 @@ function main() {
           if (typeof v !== "number" || !(v >= 0 && v <= 1)) fail(`${where}: focusRect.${k} must be in [0,1]`);
         }
         if (!(w > 0 && h > 0)) fail(`${where}: focusRect.w and focusRect.h must be > 0`);
+        if (clip.focusRect.focusFit !== undefined && !["cover", "contain"].includes(clip.focusRect.focusFit)) {
+          fail(`${where}: focusRect.focusFit must be "cover" or "contain"`);
+        }
       }
     }
 
@@ -207,6 +210,7 @@ function main() {
 }
 
 main();
+
 
 
 

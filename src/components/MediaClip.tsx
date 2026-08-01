@@ -61,18 +61,27 @@ interface FocusGeometry {
 }
 
 /**
- * For fit="focus": scale the source so the focusRect region fills the canvas,
- * centered on the focusRect center. Shared by video and image layers — this is
- * the single source of truth for focus math.
+ * For fit="focus": scale the source so the focusRect region maps onto the
+ * canvas, centered on the focusRect center. Shared by video and image layers —
+ * this is the single source of truth for focus math.
+ *
+ * mode:
+ * - "cover": max(scaleX, scaleY) — region fills canvas, excess cropped
+ * - "contain": min(scaleX, scaleY) — whole region visible, letterboxed
  *
  * The returned center is the focusRect center in SOURCE pixels; the caller
  * sets transformOrigin to that point so kenBurns zoom scales about the focus
  * center (otherwise the focus center drifts as kb changes).
  */
-function focusGeometry(focusRect: {x: number; y: number; w: number; h: number}, assetW: number, assetH: number): FocusGeometry {
+function focusGeometry(
+  focusRect: {x: number; y: number; w: number; h: number; focusFit?: "cover" | "contain"},
+  assetW: number,
+  assetH: number,
+): FocusGeometry {
   const scaleX = CANVAS_W / (assetW * focusRect.w);
   const scaleY = CANVAS_H / (assetH * focusRect.h);
-  const scale = Math.max(scaleX, scaleY);
+  const mode = focusRect.focusFit ?? "cover";
+  const scale = mode === "contain" ? Math.min(scaleX, scaleY) : Math.max(scaleX, scaleY);
   const centerX = (focusRect.x + focusRect.w / 2) * assetW;
   const centerY = (focusRect.y + focusRect.h / 2) * assetH;
   return {scale, centerX, centerY};
@@ -249,6 +258,7 @@ export const MediaClip: React.FC<{clip: Clip; asset: ManifestEntry}> = ({clip, a
       return null;
   }
 };
+
 
 
 

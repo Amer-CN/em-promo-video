@@ -40,7 +40,8 @@
               "x": {"type": "number", "minimum": 0, "maximum": 1},
               "y": {"type": "number", "minimum": 0, "maximum": 1},
               "w": {"type": "number", "minimum": 0, "maximum": 1},
-              "h": {"type": "number", "minimum": 0, "maximum": 1}
+              "h": {"type": "number", "minimum": 0, "maximum": 1},
+              "focusFit": {"enum": ["cover", "contain"], "default": "cover", "description": "cover=max(scale) fills canvas; contain=min(scale) shows whole region letterboxed"}
             },
             "additionalProperties": false
           },
@@ -73,4 +74,5 @@
   },
   "additionalProperties": false
 }
+
 
