@@ -206,3 +206,39 @@ public/sample/            smoke 测试素材
 - focusRect 精确坐标：当前用全览/粗特写，需对着界面定重点区域；
 - 留白区装饰：contain 的上下留白当前是纯黑背景，标题/配色待定；
 - 字幕节奏与文案：当前为占位文案，需按真实功能点定。
+
+---
+
+## 方向修正与 v2 出片（2026-08-01）
+
+### 核心认知修正
+- **推广片不需要界面可读，只需要质感**；信息由字幕承载。不再为「保住完整界面内容」设计。
+- 上一版 12.1s 成片人工观看判定不可用——contain 模式下内容仅占画幅 28%，其余 72% 纯黑。根因：验收标准缺少「内容占画幅比例」这一维，且产品定位错误（把推广片当成了说明书）。
+
+### C-1 画幅占比硬校验（validate-edl 新增）
+- 对每个 clip 计算媒体在画布上的实际显示面积占比：
+  - contain: scale = min(CW/(aw×fw), CH/(ah×fh))
+  - cover: scale = max(...)
+  - ratio = min(1, aw×fw×scale/CW) × min(1, ah×fh×scale/CH)
+- 规则：ratio < 0.55 且该 clip 未声明 layout → FAILED exit 1，错误信息写明实际占比和最低要求；ratio < 0.55 但声明 layout → 放行。
+- **这是硬闸门**：以后任何「画面太小」都必须在渲染前被拦住。
+- 实测：v1 账本 contain 全览 28% 失败、cover 特写 100% 通过。
+
+### C-2 HeroLayout 版式层
+- clip 新增可选字段 layout（preset/mediaTop/title/background）。
+- 新增 src/components/HeroLayout.tsx：媒体宽度铺满 1080，高度按源比例（2160x1080 → 540），顶边置于 mediaTop；24px 圆角 + 外发光阴影（rgba(0,0,0,0.5) 0 20px 60px）；留白区 #14161A→#0A0B0D 垂直渐变 + opacity 0.04 的 48px 网格线；title 88px 粗体居中，位于媒体区上方间距 64px。
+- 不声明 layout 的 clip 行为完全不变（向后兼容）。
+
+### C-3 竖形 focusRect 校验
+- validate-edl 新增 warn：fit=focus 且 focusFit=cover 时，focusRect 的宽高比 (w×assetW)/(h×assetH) 若 > 1.2，发出 warning 提示该区域偏宽扁，建议取更竖的区域（推荐 w 0.22-0.35, h 0.75-1.0）。
+
+### C-4 第二版账本 content/edl-v2.json
+- 结构（总时长 28s）：hero 全览 + closeup 特写 + kenBurns + 字幕 mix。
+- 抽 6 帧验收（output/review/v2-*.png）：媒体占比全部 88-97%（远超 55% 闸门）。
+- hero 帧（v2-hero-open.png）：标题区边缘密度 322、网格标准差 24、背景亮度梯度 32→21——标题/渐变/网格完整渲染。
+- 与上一版纯黑留白（亮度 0）对比鲜明——**C-1 闸门能在渲染前拦住同类问题**：上一版若存在此校验，会在 validate-edl 阶段以 FAILED 拦下 28% 占比，要求改 layout 或调 focusRect，不会浪费渲染时间后人工判定不可用。
+
+### 关键数据
+- v1 不可用根因：contain 全览 28% 占比，纯黑留白 72%。
+- v2 可用：hero 帧留白区亮度 21（非纯黑），媒体占比 88-97%。
+- C-1 闸门价值：渲染前拦截，避免浪费 GPU 时间产出不可用成片。

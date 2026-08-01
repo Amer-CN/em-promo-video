@@ -99,7 +99,43 @@ function main() {
         if (clip.focusRect.focusFit !== undefined && !["cover", "contain"].includes(clip.focusRect.focusFit)) {
           fail(`${where}: focusRect.focusFit must be "cover" or "contain"`);
         }
+
       }
+    }
+
+    // C-1: content-area ratio — how much of the canvas is covered by media.
+    // Hard gate: < 0.55 with no layout declaration -> FAILED (catches letterboxed
+    // shots that are too small to be readable; C-2 layout overrides this).
+    const asset = manifest.find((m) => m.id === clip.assetId);
+    const aw = asset?.width ?? 1;
+    const ah = asset?.height ?? 1;
+    const CW = 1080;
+    const CH = 1920;
+    let ratio = 1;
+    if (clip.fit === "focus" && clip.focusRect) {
+      const {w, h} = clip.focusRect;
+      const fw = aw * w;
+      const fh = ah * h;
+      const scaleX = CW / fw;
+      const scaleY = CH / fh;
+      const mode = clip.focusRect.focusFit ?? "cover";
+      const scale = mode === "contain" ? Math.min(scaleX, scaleY) : Math.max(scaleX, scaleY);
+      ratio = Math.min(1, (fw * scale) / CW) * Math.min(1, (fh * scale) / CH);
+    }
+    const ratioPct = Math.round(ratio * 100);
+    console.log(`  ${where}: contentAreaRatio=${ratioPct}% (fit=${clip.fit}${clip.focusRect ? `/${clip.focusRect.focusFit ?? "cover"}` : ""})`);
+    // C-3: warn when cover focusRect is too wide (low utilization after zoom).
+    if (clip.fit === "focus" && clip.focusRect) {
+      const focusFit = clip.focusRect.focusFit ?? "cover";
+      if (focusFit === "cover") {
+        const aspect = (clip.focusRect.w * aw) / (clip.focusRect.h * ah);
+        if (aspect > 1.2) {
+          warn(`${where}: focusRect aspect ratio ${aspect.toFixed(2)} > 1.2 — region is wide/flat; zooming will crop heavily. Consider a taller region (w 0.22-0.35, h 0.75-1.0) for vertical promo.`);
+        }
+      }
+    }
+    if (ratio < 0.55 && !clip.layout) {
+      fail(`${where}: contentAreaRatio ${ratioPct}% < 55% — media covers too little of the canvas. Use a larger focusRect, fit=cover, or declare a layout (C-2) that accounts for the empty space.`);
     }
 
     if (clip.kenBurns !== undefined) {
@@ -210,6 +246,10 @@ function main() {
 }
 
 main();
+
+
+
+
 
 
 

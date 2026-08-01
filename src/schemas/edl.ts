@@ -54,6 +54,15 @@ export const clipSchema = z
     duration: z.number().positive(),
     fit: z.enum(["cover", "contain", "focus"]),
     focusRect: focusRectSchema.optional(),
+    layout: z
+      .object({
+        preset: z.enum(["hero"]).default("hero"),
+        mediaTop: z.number().int().min(0).max(1920).optional(),
+        title: z.string().min(1).optional(),
+        background: z.enum(["gradient-dark"]).default("gradient-dark"),
+      })
+      .strict()
+      .optional(),
     kenBurns: kenBurnsSchema.optional(),
     subtitles: z.array(subtitleSchema).optional(),
   })
@@ -99,6 +108,7 @@ export const manifestEntrySchema = z
   .strict();
 
 export type ManifestEntry = z.infer<typeof manifestEntrySchema>;
+
 
 
 

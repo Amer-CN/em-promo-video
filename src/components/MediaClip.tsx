@@ -1,8 +1,8 @@
 import {cloneElement, isValidElement} from "react";
 import {IFrame, Img, OffthreadVideo, interpolate, staticFile, useCurrentFrame} from "remotion";
 import type {Clip, KenBurns, ManifestEntry} from "../schemas/edl";
+import {HeroLayout} from "./HeroLayout";
 import {CANVAS} from "../design/tokens";
-
 export const CANVAS_W = CANVAS.width;
 export const CANVAS_H = CANVAS.height;
 
@@ -246,7 +246,10 @@ function HtmlLayer({clip, asset}: {clip: Clip; asset: ManifestEntry}) {
   );
 }
 
-export const MediaClip: React.FC<{clip: Clip; asset: ManifestEntry}> = ({clip, asset}) => {
+export const MediaClip: React.FC<{clip: Clip; asset: ManifestEntry}> = ({clip, asset}) => {  // When a clip declares layout, use HeroLayout (handles background + title + framing).
+  if (clip.layout) {
+    return <HeroLayout clip={clip} asset={asset} />;
+  }
   switch (clip.type) {
     case "video":
       return <VideoLayer clip={clip} asset={asset} />;
@@ -258,6 +261,9 @@ export const MediaClip: React.FC<{clip: Clip; asset: ManifestEntry}> = ({clip, a
       return null;
   }
 };
+
+
+
 
 
 
