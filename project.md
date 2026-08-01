@@ -36,7 +36,7 @@
 
 5. **fit=focus / kenBurns / 字幕分组**：已在代码中实现并有 edl 用例（focus+kenBurns 用于截图 clip，字幕 3 条），渲染跑通，但**未逐帧人工检视视觉效果** → 视觉质量 UNVERIFIED。
 
-6. **git push 状态**：见下方交付动作。
+6. **git push**：✅ VERIFIED。远程仓库原本不存在，已用 `gh repo create Amer-CN/em-promo-video --private` 创建（PRIVATE），`git push -u origin main` 成功，默认分支 main，工作区干净。commit: `2719088 feat: asset-driven vertical promo video skeleton (Remotion)`（29 files, 5105 insertions）。
 
 ## 目录结构
 
@@ -54,3 +54,4 @@ src/compositions/Promo.tsx    时间轴渲染
 src/Root.tsx / src/index.ts   composition 注册
 public/sample/            smoke 测试素材
 ```
+
