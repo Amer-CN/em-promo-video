@@ -11,6 +11,9 @@ export const SAFE_AREA = {
   right: 80,
 } as const;
 
+/** Fraction of canvas height above the bottom safe area that must stay text-free. */
+export const NO_TEXT_ZONE_FRACTION = 0.15;
+
 export const COLORS = {
   background: "#0E0E10",
   warmWhite: "#F5F0E8",
@@ -24,3 +27,4 @@ export const EASING = {
   natural: "cubic-bezier(0.22, 1, 0.36, 1)",
   gentle: "cubic-bezier(0.4, 0, 0.2, 1)",
 } as const;
+

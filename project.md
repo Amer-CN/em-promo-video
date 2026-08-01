@@ -89,3 +89,45 @@ public/sample/            smoke 测试素材
 - ✅ `npm run typecheck` → exit 0
 - ✅ `npm run validate:edl` → OK (3 clip(s), 0 warning(s))
 - ✅ smoke 渲染 30 帧 → 成功（新 manifest schema 未破坏渲染链路）
+
+---
+
+## 第三轮修复记录（2026-08-01）
+
+### P0-1 素材路径 —— PASS（含渲染级验证）
+- 修复：`public/raw` junction → `D:\EngineeringManager\promo\raw`（.gitignore 已加）；scan-assets `DEFAULT_INPUT` 改为 `public/raw`，`assetPath()` 只输出 public 相对路径，public 外文件报错退出（exit 1 + 提示建 junction 命令，实测 tmp/outside 验证）；`resolveAssetSrc` 对盘符路径（正/反斜杠）throw。
+- 渲染级验收：注入含 `D:/...` 绝对路径的 manifest 渲染，浏览器端明确抛 `resolveAssetSrc: absolute path ... cannot be rendered via staticFile()`——明确报错而非黑屏。
+- 额外修复：Remotion 4.0.499 在 Windows 打包 public/ 时对 junction 用无 type 的 `fs.symlink` 导致 EPERM；`scripts/patch-remotion.mjs` 改为 `type="junction"`（无需管理员），幂等，postinstall 自动应用。
+
+### P0-2 video fit=focus —— PASS（抽帧主色验证）
+- 修复：focus 几何抽成公共 `FocusLayer`（video/image 共用）；`applyFit` 补 focus 分支；fit=focus 但缺 focusRect 时红屏警示不静默降级。
+- 验收：quadrants.mp4（红/绿/蓝/黄四象限 1920x1080）fit=focus focusRect=右下象限，渲染后抽帧 `output/review/focus-mid.png`、`focus2-mid.png`：整帧主色 #F0E000（亮黄）——右下角被放大填满，非中间裁切。
+- kenBurns 焦点锚定（审查 P1 修复）：`output/review/kb-first.png`（kb=1.0）与 `kb-last.png`（kb=1.06）均整帧纯黄，焦点中心不随缩放漂移（transformOrigin=焦点中心 + translate=画布中心-焦点中心）。
+
+### P0-3 字幕逐组闪现 —— PASS（抽帧 diff 验证）
+- 修复：同一时刻只显示一组（单行居中 2-4 字）；字幕 [start,end] 按组数等分逐组切换，组首 3 帧快速淡入（interpolate，非 spring）；groupChars 三阶段（标点硬切→4 字上限避免拆双字词→单字合并）；NO_TEXT_ZONE_FRACTION=0.15 迁入 design/tokens.ts。
+- 验收：纯黑背景 + 3 句字幕（欢迎使用本产品 / 三步完成配置 / 马上开始吧）渲染 `output/review-sub.mp4`，抽 6 帧（g1a/g1b/g2a/g2b/g3a/g3b）：
+  - bbox 验证：文字 x 415-664（居中）、y 1406-1465（单行）、宽度 120-249px（2-4 字）；
+  - 组间 diffPx=5902/8066/6433（组随推进切换）；
+  - 同组内 f5 vs f12 diffPx=0（稳定无闪变）。
+
+### P1 参数化与真源 —— 完成
+- P1-1 EDL 参数化：`scripts/render-edl.mjs --edl <path>` 在 node 端读文件→注入内容 props→调 remotion render（focus/subtitle/kb 三个验收均用它渲染成功）。**架构事实（如实报告）**：Remotion 4.0.499 的 calculateMetadata 在渲染器浏览器页面内运行（`node_modules/@remotion/renderer/dist/select-composition.js` 通过 puppeteer evaluate `window.remotion_calculateComposition`），浏览器 bundle 无法读文件系统；因此裸 `--props='{"edlPath":...}'` 必然报 "missing edl content"（已实测）。等价能力由包装脚本提供，为自动生成账本铺路。
+- P1-2/3：fps 全收敛 CANVAS.fps（MediaClip/Promo/Root）；VideoLayer endAt 无 sourceOut 时传 undefined（不再 ?? 0）。
+- P1-4：源码确认 `node_modules/remotion/dist/cjs/video/props.d.ts` 中 startFrom/endAt 标 @deprecated，改名为 trimBefore/trimAfter；MediaClip 已改用现行 API。
+- P1-5：record-ui 转码加 `-vf fps=30`，ffprobe 确认输出 30/1。
+
+### P2 —— 完成
+- probe() 跳过 html（不再对 card.html 跑 ffprobe）；sceneCuts 加 `-an` + `scale=480:-1` 降采样 + spawn 流式读 stderr（长视频不堆内存），pts_time 跨 chunk 拼接（审查 P2-1）；collectFiles 显式跟随 junction/symlink 目录并报告 broken link（审查 P2-2，`--input public` 实测 6 素材正常）。
+- package.json 加 postinstall 自动应用 Remotion 补丁（审查 P2-3）。
+
+### 功能缺口：record-ui steps —— 完成
+- `content/recordings.json`（demo-app：hover/fill/click/wait/scroll 6 步）在合成 HTML 上端到端跑通，每步间默认 600ms 停顿（pauseMs 可覆盖）；EM_DEMO_MODE=1 安全阀一字未改（缺失时 REFUSED exit 1）。
+
+### 独立审查（read_only_task）
+发现并修复：P1 focus+kenBurns 焦点漂移（见 P0-2 验收）；P2 pts_time 跨 chunk、junction 穿透、postinstall 补丁持久化、groupChars 空输入、淡入短组退化。
+
+### 验收状态
+- doctor / typecheck / validate:edl 全绿。
+- 抽帧全部存 `output/review/`：focus-mid、focus2-mid、kb-first、kb-last、g1a-g3b（subtitle）、sub-*。
+- 全部为「看画面后写 PASS」（主色/bbox/diffPx 程序化人眼替代，已逐张说明看到了什么）。

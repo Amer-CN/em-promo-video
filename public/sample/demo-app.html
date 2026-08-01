@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin:0; font-family:"Microsoft YaHei",sans-serif; background:#0f172a; color:#f8fafc; }
+  .app { padding:40px; }
+  h1 { font-size:48px; margin:0 0 24px; }
+  #log { background:#1e293b; border-radius:12px; padding:24px; min-height:120px; font-size:28px; margin-bottom:24px; }
+  .row { display:flex; gap:16px; margin-bottom:16px; }
+  input { font-size:28px; padding:12px; border-radius:8px; border:none; width:400px; }
+  button { font-size:28px; padding:12px 24px; border-radius:8px; border:none; background:#3b82f6; color:#fff; cursor:pointer; }
+  .scrollbox { height:600px; overflow-y:auto; background:#1e293b; border-radius:12px; padding:24px; }
+  .item { padding:16px; border-bottom:1px solid #334155; font-size:26px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>演示系统（合成数据）</h1>
+  <div id="log">等待操作…</div>
+  <div class="row">
+    <input id="name" placeholder="输入演示名称" value="">
+    <button id="go">提交</button>
+  </div>
+  <div class="scrollbox" id="list">
+    <div class="item">条目 A —— 数据行 1</div>
+    <div class="item">条目 B —— 数据行 2</div>
+    <div class="item">条目 C —— 数据行 3</div>
+    <div class="item">条目 D —— 数据行 4</div>
+    <div class="item">条目 E —— 数据行 5</div>
+    <div class="item">条目 F —— 数据行 6</div>
+  </div>
+</div>
+<script>
+  const log = document.getElementById("log");
+  const name = document.getElementById("name");
+  const go = document.getElementById("go");
+  go.addEventListener("click", () => {
+    log.textContent = "已提交：" + (name.value || "（空）");
+  });
+  const list = document.getElementById("list");
+  list.addEventListener("scroll", () => {
+    log.textContent = "滚动中：" + list.scrollTop + "px";
+  });
+</script>
+</body>
+</html>

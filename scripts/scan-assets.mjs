@@ -1,5 +1,5 @@
-import {execFileSync, spawnSync} from "node:child_process";
-import {existsSync, mkdirSync, readdirSync, writeFileSync} from "node:fs";
+import {execFileSync, spawn, spawnSync} from "node:child_process";
+import {existsSync, mkdirSync, readdirSync, statSync, writeFileSync} from "node:fs";
 import {basename, extname, join, relative, resolve} from "node:path";
 import {fileURLToPath} from "node:url";
 import {dirname} from "node:path";
@@ -7,7 +7,7 @@ import {dirname} from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 
-const DEFAULT_INPUT = "D:\\EngineeringManager\\promo\\raw";
+const DEFAULT_INPUT = join(root, "public", "raw");
 const OUTPUT_FILE = join(root, "content", "manifest.json");
 const THUMB_DIR = join(root, "output", "thumbnails");
 
@@ -65,24 +65,45 @@ const r3 = (x) => Math.round(x * 1000) / 1000;
  * Scene-cut detection via ffmpeg's `select='gt(scene,THRESHOLD)',showinfo`.
  * Returns ascending cut timestamps (seconds). Empty array when no cuts found.
  * Read-only: never re-encodes or modifies the source file.
+ *
+ * Performance: -an drops audio demux, scale=480:-1 downsamples before the
+ * scene filter, and stderr is streamed line-by-line so long videos never
+ * accumulate tens of MB of output in memory.
  */
 function sceneCuts(file, threshold) {
-  const r = spawnSync(
+  const child = spawn(
     "ffmpeg",
-    ["-i", file, "-vf", `select='gt(scene,${threshold})',showinfo`, "-f", "null", "-"],
-    {encoding: "utf8", windowsHide: true},
+    ["-i", file, "-an", "-vf", `scale=480:-1,select='gt(scene,${threshold})',showinfo`, "-f", "null", "-"],
+    {windowsHide: true},
   );
-  if (r.status !== 0) {
-    console.warn(`  ! scene detection failed for ${file}: ${(r.stderr || "").split("\n").slice(-3).join(" ")}`);
-    return [];
-  }
   const pts = [];
-  const re = /pts_time:([0-9.]+)/g;
-  let m;
-  while ((m = re.exec(r.stderr || "")) !== null) {
-    pts.push(parseFloat(m[1]));
-  }
-  return [...new Set(pts)].sort((a, b) => a - b);
+  let errTail = "";
+  return new Promise((resolve) => {
+    child.stderr.on("data", (chunk) => {
+      const text = chunk.toString("utf8");
+      // Run the regex over (tail + text) so a pts_time number split across a
+      // chunk boundary is still captured; keep only the trailing partial line.
+      const window = errTail + text;
+      const re = /pts_time:([0-9.]+)/g;
+      let m;
+      while ((m = re.exec(window)) !== null) {
+        pts.push(parseFloat(m[1]));
+      }
+      errTail = window.slice(window.lastIndexOf("\n") + 1).slice(-256);
+    });
+    child.on("error", (err) => {
+      console.warn(`  ! scene detection spawn failed for ${file}: ${err.message}`);
+      resolve([]);
+    });
+    child.on("close", (code) => {
+      if (code !== 0) {
+        console.warn(`  ! scene detection failed for ${file} (exit ${code}): ${errTail.split("\n").slice(-3).join(" ")}`);
+        resolve([]);
+        return;
+      }
+      resolve([...new Set(pts)].sort((a, b) => a - b));
+    });
+  });
 }
 
 /** Turn cut timestamps into contiguous segments covering [0, durationSec]. */
@@ -124,9 +145,23 @@ function collectFiles(dir) {
   const entries = readdirSync(dir, {withFileTypes: true});
   for (const entry of entries) {
     const full = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      out.push(...collectFiles(full));
-    } else if (SCAN_EXTS.has(extname(entry.name).toLowerCase())) {
+    // Junction / symlink dirs (e.g. public/raw -> D:\EngineeringManager\promo\raw):
+    // Dirent.isDirectory() is false for them on Windows, but they are real dirs.
+    // Follow them via stat() so the junction subtree is scanned (and a broken
+    // junction is reported instead of silently skipped).
+    if (entry.isDirectory() || entry.isSymbolicLink()) {
+      try {
+        const st = statSync(full);
+        if (st.isDirectory()) {
+          out.push(...collectFiles(full));
+          continue;
+        }
+      } catch (err) {
+        console.warn(`  ! broken link/junction skipped: ${full} (${err.code})`);
+        continue;
+      }
+    }
+    if (entry.isFile() && SCAN_EXTS.has(extname(entry.name).toLowerCase())) {
       out.push(full);
     }
   }
@@ -136,19 +171,28 @@ function collectFiles(dir) {
 const publicDir = join(root, "public");
 
 /**
- * Path strategy:
- * - assets under <root>/public  → public-relative POSIX path (loadable via staticFile)
- * - everything else            → absolute POSIX path (renderer must map it, e.g. file://)
+ * Path strategy: ALL assets must live under <root>/public (e.g. the public/raw
+ * junction -> D:\EngineeringManager\promo\raw). Only public-relative POSIX
+ * paths are written to the manifest, because the renderer resolves every
+ * asset via staticFile() against public/. A file outside public/ would render
+ * as a 404 black frame, so we fail loudly instead of emitting a broken path.
+ *
+ * To add a new external source dir, create a junction once (admin-free):
+ *   New-Item -ItemType Junction -Path "public\raw" -Target "D:\EngineeringManager\promo\raw"
  */
 function assetPath(file) {
   const abs = resolve(file);
-  if (abs.startsWith(publicDir)) {
-    return relative(publicDir, abs).replace(/\\/g, "/");
+  const rel = relative(publicDir, abs);
+  if (rel.startsWith("..") || rel.startsWith("..\\") || rel === "..") {
+    console.error(`ERROR: asset outside public/ cannot be rendered: ${abs}`);
+    console.error(`Create a junction so the renderer can reach it, e.g.:`);
+    console.error(`  New-Item -ItemType Junction -Path "public\\raw" -Target "<source dir>"`);
+    process.exit(1);
   }
-  return abs.replace(/\\/g, "/");
+  return rel.replace(/\\/g, "/");
 }
 
-function inspectFile(file, inputDir, sceneThreshold, maxThumbnails) {
+async function inspectFile(file, inputDir, sceneThreshold, maxThumbnails) {
   const ext = extname(file).toLowerCase();
   const rel = relative(inputDir, file).replace(/\\/g, "/");
   let type;
@@ -156,7 +200,8 @@ function inspectFile(file, inputDir, sceneThreshold, maxThumbnails) {
   else if (IMAGE_EXTS.has(ext)) type = "image";
   else type = "html";
 
-  const info = probe(file);
+  // HTML has no ffprobe stream info; skip probing entirely.
+  const info = type === "html" ? null : probe(file);
   const videoStream = info?.streams?.find((s) => s.codec_type === "video");
   const audioStream = info?.streams?.find((s) => s.codec_type === "audio");
   const id = slugify(rel);
@@ -176,7 +221,7 @@ function inspectFile(file, inputDir, sceneThreshold, maxThumbnails) {
   };
 
   if (type === "video") {
-    const cuts = sceneCuts(file, sceneThreshold);
+    const cuts = await sceneCuts(file, sceneThreshold);
     const segments = makeSegments(cuts, entry.durationSec);
     entry.segments = segments;
     entry.thumbnails = extractThumbnails(file, segments, id, maxThumbnails);
@@ -186,7 +231,7 @@ function inspectFile(file, inputDir, sceneThreshold, maxThumbnails) {
   return entry;
 }
 
-function main() {
+async function main() {
   const {input, sceneThreshold, maxThumbnails} = parseArgs(process.argv);
   console.log("scan-assets: input =", input);
 
@@ -198,10 +243,22 @@ function main() {
   const files = collectFiles(input);
   console.log(`scan-assets: found ${files.length} asset file(s)`);
 
-  const manifest = files.map((f) => inspectFile(f, input, sceneThreshold, maxThumbnails)).sort((a, b) => a.id.localeCompare(b.id));
+  const manifest = [];
+  for (const f of files) {
+    manifest.push(await inspectFile(f, input, sceneThreshold, maxThumbnails));
+  }
+  manifest.sort((a, b) => a.id.localeCompare(b.id));
 
   writeFileSync(OUTPUT_FILE, JSON.stringify(manifest, null, 2) + "\n", "utf8");
   console.log(`scan-assets: wrote ${manifest.length} entr(ies) to ${OUTPUT_FILE}`);
 }
 
-main();
+main().catch((err) => { console.error(err); process.exit(1); });
+
+
+
+
+
+
+
+

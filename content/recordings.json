@@ -1,0 +1,16 @@
+[
+  {
+    "id": "demo-app",
+    "url": "file:///C:/Users/Admin/Developer/em-promo-video/public/sample/demo-app.html",
+    "viewport": { "width": 1920, "height": 1080 },
+    "durationSec": 2,
+    "steps": [
+      { "type": "hover", "selector": "#go", "describe": "悬停提交按钮" },
+      { "type": "fill", "selector": "#name", "value": "演示名称ABC", "describe": "输入演示名称" },
+      { "type": "click", "selector": "#go", "describe": "点击提交" },
+      { "type": "wait", "ms": 800, "describe": "停顿观察结果" },
+      { "type": "scroll", "selector": "#list", "deltaY": 800, "describe": "向下滚动列表" },
+      { "type": "wait", "ms": 800, "describe": "结尾停顿" }
+    ]
+  }
+]

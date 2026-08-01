@@ -21,7 +21,7 @@ em-promo-video 是一个**素材驱动**的竖屏（1080x1920 @ 30fps）宣传�
 ```
 public/（素材）或外部目录
   → scripts/scan-assets.mjs --input <dir>（默认 D:\EngineeringManager\promo\raw）
-      对每个视频跑 scene detection（ffmpeg select='gt(scene,0.15)',showinfo），
+      对每个视频跑 scene detection（ffmpeg -an scale=480:-1 select='gt(scene,0.15)',showinfo），
       输出 segments（场景切点连续段）+ 每段缩略图到 output/thumbnails/
   → content/manifest.json（素材账本：id/path/type/durationSec/width/height/fps/hasAudio/
       segments/thumbnails）
@@ -48,10 +48,11 @@ UI 录制：scripts/record-ui.mjs（Playwright，EM_DEMO_MODE=1 强制）
 
 - 时间单位：EDL 里全部用**秒**（sourceIn/sourceOut 是 clip 局部时间，timelineStart/duration 是时间轴绝对时间），组件内转帧（30fps）。
 - fit 语义：cover=铺满裁剪 / contain=完整包含 / focus=取 focusRect 区域铺满（横屏录屏常用）。
-- 素材 path：`public/` 下素材输出为相对路径（staticFile 可加载）；外部目录输出绝对路径。
+- 素材 path：scan-assets 只输出 `public/` 相对路径（staticFile 可加载）；public 外文件直接报错退出（提示建 junction），绝不静默输出渲染不了的绝对路径；渲染端 resolveAssetSrc 对盘符路径直接 throw。
 - HTML 素材用官方 `<IFrame>` 组件渲染，其内置 delayRender 等待加载；**不要**再手写 delayRender，否则与官方机制冲突导致渲染超时。
-- 字幕：底部安全区（160px）+ 其上 15% 画布高度内不放字；2–4 字一组换行。
+- 字幕：底部安全区（160px）+ 其上 15% 画布高度内不放字（NO_TEXT_ZONE_FRACTION 在 design/tokens.ts）；同一时刻只显示一组（2–4 字单行居中），组间 3 帧快速淡入切换，groupChars 按标点硬切→4 字上限（避免拆双字词）→单字合并保底。
 - **脱敏红线**：`scripts/record-ui.mjs` 必须 `EM_DEMO_MODE=1` 才执行（防真实客户名/金额录进要发布的视频），任何情况下不得绕过。
 - EDL 的 meta.voiceoverDurationSec（可选）：一旦设置，校验强制「时间轴总时长 ≥ 配音时长」，接入 TTS 后先算配音时长再排时间轴。
 - scdet 阈值 0.15 是录屏的猜测值，真实素材到位后需实测调参（`--scene-threshold`）。
+
 

@@ -8,3 +8,5 @@ tmp/*
 .DS_Store
 vendor/references/*
 !vendor/references/.gitkeep
+
+public/raw/

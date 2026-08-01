@@ -1,5 +1,15 @@
 [
   {
+    "id": "black_png",
+    "path": "sample/black.png",
+    "type": "image",
+    "durationSec": null,
+    "width": 1920,
+    "height": 1080,
+    "fps": null,
+    "hasAudio": null
+  },
+  {
     "id": "card_html",
     "path": "sample/card.html",
     "type": "html",
@@ -8,6 +18,35 @@
     "height": null,
     "fps": null,
     "hasAudio": null
+  },
+  {
+    "id": "demo-app_html",
+    "path": "sample/demo-app.html",
+    "type": "html",
+    "durationSec": null,
+    "width": null,
+    "height": null,
+    "fps": null,
+    "hasAudio": null
+  },
+  {
+    "id": "quadrants_mp4",
+    "path": "sample/quadrants.mp4",
+    "type": "video",
+    "durationSec": 4,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "hasAudio": false,
+    "segments": [
+      {
+        "start": 0,
+        "end": 4
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/quadrants_mp4__0.jpg"
+    ]
   },
   {
     "id": "screenshot_png",

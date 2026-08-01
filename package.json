@@ -10,7 +10,9 @@
     "validate:edl": "node scripts/validate-edl.mjs",
     "studio": "remotion studio src/index.ts",
     "render": "remotion render",
-    "record:ui": "node scripts/record-ui.mjs"
+    "record:ui": "node scripts/record-ui.mjs",
+    "render:edl": "node scripts/render-edl.mjs",
+    "postinstall": "node scripts/patch-remotion.mjs"
   },
   "dependencies": {
     "@remotion/canvas-capture": "4.0.499",

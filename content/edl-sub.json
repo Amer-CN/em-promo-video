@@ -1,0 +1,18 @@
+{
+  "meta": { "width": 1080, "height": 1920, "fps": 30, "title": "subtitle-acceptance" },
+  "clips": [
+    {
+      "id": "sub-clip",
+      "assetId": "black_png",
+      "type": "image",
+      "timelineStart": 0,
+      "duration": 6,
+      "fit": "cover",
+      "subtitles": [
+        { "text": "欢迎使用本产品", "start": 0, "end": 2 },
+        { "text": "三步完成配置", "start": 2, "end": 4 },
+        { "text": "马上开始吧", "start": 4, "end": 6 }
+      ]
+    }
+  ]
+}
