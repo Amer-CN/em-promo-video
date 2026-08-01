@@ -13,7 +13,8 @@
         "width": {"type": "integer", "const": 1080},
         "height": {"type": "integer", "const": 1920},
         "fps": {"type": "number", "const": 30},
-        "title": {"type": "string", "minLength": 1}
+        "title": {"type": "string", "minLength": 1},
+        "voiceoverDurationSec": {"type": "number", "minimum": 0, "description": "Optional total voiceover length; when set, timeline duration must cover it"}
       },
       "additionalProperties": false
     },
@@ -72,3 +73,4 @@
   },
   "additionalProperties": false
 }
+

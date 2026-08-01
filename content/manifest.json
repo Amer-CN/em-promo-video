@@ -27,6 +27,15 @@
     "width": 1920,
     "height": 1080,
     "fps": 30,
-    "hasAudio": true
+    "hasAudio": true,
+    "segments": [
+      {
+        "start": 0,
+        "end": 6
+      }
+    ],
+    "thumbnails": [
+      "output/thumbnails/video_mp4__0.jpg"
+    ]
   }
 ]

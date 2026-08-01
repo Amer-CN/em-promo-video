@@ -6,6 +6,7 @@ export const edlMetaSchema = z
     height: z.literal(1920),
     fps: z.literal(30),
     title: z.string().min(1),
+    voiceoverDurationSec: z.number().min(0).optional(),
   })
   .strict();
 
@@ -74,7 +75,20 @@ export const manifestEntrySchema = z
     height: z.number().nullable(),
     fps: z.number().nullable(),
     hasAudio: z.boolean().nullable(),
+    segments: z
+      .array(
+        z
+          .object({
+            start: z.number(),
+            end: z.number(),
+          })
+          .strict(),
+      )
+      .optional(),
+    thumbnails: z.array(z.string()).optional(),
   })
   .strict();
 
 export type ManifestEntry = z.infer<typeof manifestEntrySchema>;
+
+

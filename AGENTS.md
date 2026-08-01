@@ -21,19 +21,25 @@ em-promo-video 是一个**素材驱动**的竖屏（1080x1920 @ 30fps）宣传�
 ```
 public/（素材）或外部目录
   → scripts/scan-assets.mjs --input <dir>（默认 D:\EngineeringManager\promo\raw）
-  → content/manifest.json（素材账本：id/path/type/durationSec/width/height/fps/hasAudio）
+      对每个视频跑 scene detection（ffmpeg select='gt(scene,0.15)',showinfo），
+      输出 segments（场景切点连续段）+ 每段缩略图到 output/thumbnails/
+  → content/manifest.json（素材账本：id/path/type/durationSec/width/height/fps/hasAudio/
+      segments/thumbnails）
 content/edl.json（剪辑决策，引用 manifest 的 assetId）
-  → scripts/validate-edl.mjs（校验：时间轴连续无重叠空洞、sourceIn/Out 边界、字幕区间）
+  → scripts/validate-edl.mjs（校验：时间轴连续无重叠空洞、sourceIn/Out 边界、字幕区间、
+      可选 voiceoverDurationSec ≤ 时间轴总时长）
   → Remotion 渲染 src/index.ts Promo
   → output/*.mp4
+UI 录制：scripts/record-ui.mjs（Playwright，EM_DEMO_MODE=1 强制）
 ```
 
 ## 命令
 
 - `npm run doctor`：工具链 + 结构检查
 - `npm run typecheck`：tsc --noEmit
-- `npm run scan-assets`：扫描默认素材目录生成 manifest
-- `npm run validate:edl`：校验 content/edl.json
+- `npm run scan-assets`：扫描默认素材目录生成 manifest（含 scene detection + 缩略图；可用 `--scene-threshold` 调阈值、`--max-thumbnails` 限数量）
+- `npm run validate:edl`：校验 content/edl.json（支持 `--edl <file>` 指定文件）
+- `npm run record:ui -- --url <url> --duration <sec>`：Playwright 录 UI 演示，输出 output/recordings/
 - `npm run studio`：Remotion Studio 预览
 - `npm run render -- Promo output/xxx.mp4`：渲染 composition
 - `npx remotion render src/index.ts Promo output/smoke.mp4`：完整渲染命令
@@ -45,3 +51,7 @@ content/edl.json（剪辑决策，引用 manifest 的 assetId）
 - 素材 path：`public/` 下素材输出为相对路径（staticFile 可加载）；外部目录输出绝对路径。
 - HTML 素材用官方 `<IFrame>` 组件渲染，其内置 delayRender 等待加载；**不要**再手写 delayRender，否则与官方机制冲突导致渲染超时。
 - 字幕：底部安全区（160px）+ 其上 15% 画布高度内不放字；2–4 字一组换行。
+- **脱敏红线**：`scripts/record-ui.mjs` 必须 `EM_DEMO_MODE=1` 才执行（防真实客户名/金额录进要发布的视频），任何情况下不得绕过。
+- EDL 的 meta.voiceoverDurationSec（可选）：一旦设置，校验强制「时间轴总时长 ≥ 配音时长」，接入 TTS 后先算配音时长再排时间轴。
+- scdet 阈值 0.15 是录屏的猜测值，真实素材到位后需实测调参（`--scene-threshold`）。
+

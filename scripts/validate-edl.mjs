@@ -6,8 +6,13 @@ import {dirname} from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 
-const EDL_FILE = join(root, "content", "edl.json");
-const MANIFEST_FILE = join(root, "content", "manifest.json");
+function resolveArg(name, fallback) {
+  const idx = process.argv.indexOf(name);
+  return idx !== -1 && process.argv[idx + 1] ? process.argv[idx + 1] : fallback;
+}
+
+const EDL_FILE = resolveArg("--edl", join(root, "content", "edl.json"));
+const MANIFEST_FILE = resolveArg("--manifest", join(root, "content", "manifest.json"));
 const EPS = 1e-6;
 
 const errors = [];
@@ -126,6 +131,17 @@ function main() {
     }
   }
 
+  // ---- voiceover coverage: timeline duration must cover the declared voiceover ----
+  const voSec = edl.meta?.voiceoverDurationSec;
+  if (typeof voSec === "number" && voSec > 0) {
+    const timelineEnd = sorted.length > 0 ? sorted[sorted.length - 1].timelineStart + sorted[sorted.length - 1].duration : 0;
+    if (timelineEnd < voSec - EPS) {
+      fail(`voiceoverDurationSec (${voSec}s) exceeds timeline duration (${timelineEnd}s)`);
+    } else {
+      console.log(`validate-edl: voiceover ${voSec}s covered by timeline ${timelineEnd}s`);
+    }
+  }
+
   // ---- source bounds vs manifest ----
   if (manifest) {
     for (const clip of clips) {
@@ -170,3 +186,4 @@ function main() {
 }
 
 main();
+

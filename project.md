@@ -55,3 +55,37 @@ src/Root.tsx / src/index.ts   composition 注册
 public/sample/            smoke 测试素材
 ```
 
+
+---
+
+# 第二轮：审查反馈补齐（2026-08-01）
+
+背景：外部审查者反馈三项缺口（scdet 场景切分、record-ui 录制、配音时长校验），并因私有仓库 404 读不到代码。**注意：这三项并不在我第一轮收到的任务指令里**（第一轮 scan-assets 要求明确是「递归扫描 + ffprobe 元数据 + manifest.json，只读不转码」，无 scdet；无录制脚本；validate-edl 规则是时间轴/source 边界/字幕三条）。本轮按用户确认补齐，属新增需求而非「漏做补交」。
+
+## 仓库可见性
+- ✅ VERIFIED：`gh repo edit Amer-CN/em-promo-video --visibility public`，现为 PUBLIC（用户决策）。
+
+## 三项补齐
+
+### 1. scdet 场景切分（scan-assets.mjs）
+- ✅ VERIFIED：`sceneCuts()` 跑 `ffmpeg -i <file> -vf "select='gt(scene,0.15)',showinfo" -f null -`，解析 `pts_time` 得切点；`makeSegments()` 转连续段；`extractThumbnails()` 每段中点取一帧到 `output/thumbnails/<id>__<n>.jpg`。
+- 参数：`--scene-threshold`（默认 0.15）、`--max-thumbnails`（默认 20）。
+- 实测：`node scripts/scan-assets.mjs --input public/sample` → video_mp4 1 segment + 1 缩略图（合成素材 testsrc2 画面平滑，段数少属预期）。manifest.json 的 video 条目新增 `segments`/`thumbnails`；zod `manifestEntrySchema` 同步加了可选字段。
+- ⚠️ 阈值 0.15 只是录屏猜测值，真实录屏到位后必须实测调参（UNVERIFIED for real footage）。
+
+### 2. record-ui.mjs（Playwright 录制）
+- ✅ VERIFIED：`npm install -D playwright` + `npx playwright install chromium`（chromium-1234）成功。
+- ✅ 安全阀：无 `EM_DEMO_MODE=1` → `REFUSED` + exit 1（脱敏红线）。
+- ✅ 端到端：`EM_DEMO_MODE=1 node scripts/record-ui.mjs --url file:///...card.html --duration 3` → webm + ffmpeg 转 mp4（1920x1080/25fps）成功。
+- ⚠️ 真实 EM 系统 URL 与 UI 未录制过（UNVERIFIED）；Playwright recordVideo 输出 webm，默认 25fps，promo 时间轴是 30fps——真实链路要转码后对帧率，尚未处理。
+
+### 3. 配音时长校验
+- ✅ VERIFIED：EDL meta 新增可选 `voiceoverDurationSec`（edl.schema.json + zod）；validate-edl 新增「时间轴总时长 ≥ 配音时长」。
+- ✅ 正测试：8s ≤ 10s → OK（打印 `voiceover 8s covered by timeline 10s`）；负测试：12s > 10s → FAILED exit 1。
+- 当前 edl.json 未设该字段，不触发。接入 TTS 后先算配音时长再排时间轴。
+
+## 回归验收
+- ✅ `npm run doctor` → OK
+- ✅ `npm run typecheck` → exit 0
+- ✅ `npm run validate:edl` → OK (3 clip(s), 0 warning(s))
+- ✅ smoke 渲染 30 帧 → 成功（新 manifest schema 未破坏渲染链路）
