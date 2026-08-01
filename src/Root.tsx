@@ -6,7 +6,7 @@ import {edlSchema, manifestEntrySchema} from "./schemas/edl";
 // node:fs involved, so this is safe in the browser bundle. These become the
 // Studio-preview defaults; render-edl.mjs props override them at render time.
 import edlJson from "../content/edl.json";
-import manifestJson from "../content/manifest.json";
+import manifestJson from "../output/manifest.json";
 
 const defaultEdl = edlSchema.parse(edlJson);
 const defaultManifest = manifestEntrySchema.array().parse(manifestJson);
@@ -40,3 +40,4 @@ export const RemotionRoot: React.FC = () => {
     />
   );
 };
+

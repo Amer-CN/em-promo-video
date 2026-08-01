@@ -1,48 +1,187 @@
 {
-  "meta": { "width": 1080, "height": 1920, "fps": 30, "title": "em-promo-v1" },
+  "meta": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "title": "em-promo-v2"
+  },
   "clips": [
     {
-      "id": "open-overview",
+      "id": "hero-open",
       "assetId": "工程管家-Bedrock-设计原型_webm",
       "type": "video",
-      "sourceIn": 5.3,
-      "sourceOut": 8.6,
-      "timelineStart": 0,
-      "duration": 3.3,
+      "sourceIn": 9,
+      "sourceOut": 13,
+      "duration": 4,
       "fit": "focus",
-      "focusRect": { "x": 0, "y": 0, "w": 1, "h": 1, "focusFit": "contain" },
+      "focusRect": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "focusFit": "contain"
+      },
+      "layout": {
+        "preset": "hero",
+        "title": "工程管家",
+        "mediaTop": 380
+      },
       "subtitles": [
-        { "text": "工程管家，您的工地管理助手", "start": 0.2, "end": 3.1 }
-      ]
+        {
+          "text": "把工地搬进手机",
+          "start": 0.3,
+          "end": 3.5
+        }
+      ],
+      "timelineStart": 0
     },
     {
-      "id": "action-recording",
+      "id": "closeup-table",
       "assetId": "5_webm",
       "type": "video",
       "sourceIn": 2,
       "sourceOut": 8,
-      "timelineStart": 3.3,
       "duration": 6,
       "fit": "focus",
-      "focusRect": { "x": 0, "y": 0, "w": 1, "h": 1, "focusFit": "contain" },
+      "focusRect": {
+        "x": 0.28,
+        "y": 0.32,
+        "w": 0.36,
+        "h": 0.56,
+        "focusFit": "cover"
+      },
+      "kenBurns": {
+        "from": 1.0,
+        "to": 1.04
+      },
       "subtitles": [
-        { "text": "关键操作一目了然", "start": 0.5, "end": 3 },
-        { "text": "数据实时同步", "start": 3.2, "end": 5.8 }
-      ]
+        {
+          "text": "关键数据一目了然",
+          "start": 0.5,
+          "end": 3
+        },
+        {
+          "text": "实时同步云端",
+          "start": 3.2,
+          "end": 5.8
+        }
+      ],
+      "timelineStart": 4
     },
     {
-      "id": "close-focus",
+      "id": "closeup-form",
       "assetId": "5_webm",
       "type": "video",
-      "sourceIn": 8,
-      "sourceOut": 10.8,
-      "timelineStart": 9.3,
-      "duration": 2.8,
+      "sourceIn": 10.867,
+      "sourceOut": 15.849,
+      "duration": 4.98,
       "fit": "focus",
-      "focusRect": { "x": 0.15, "y": 0.55, "w": 0.5, "h": 0.28, "focusFit": "cover" },
+      "focusRect": {
+        "x": 0.32,
+        "y": 0.25,
+        "w": 0.3,
+        "h": 0.65,
+        "focusFit": "cover"
+      },
       "subtitles": [
-        { "text": "从工地到云端", "start": 0.4, "end": 2.5 }
-      ]
+        {
+          "text": "表单操作简洁高效",
+          "start": 0.5,
+          "end": 4.5
+        }
+      ],
+      "timelineStart": 10
+    },
+    {
+      "id": "hero-mid",
+      "assetId": "工程管家-Bedrock-设计原型_webm",
+      "type": "video",
+      "sourceIn": 9,
+      "sourceOut": 13,
+      "duration": 4,
+      "fit": "focus",
+      "focusRect": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "focusFit": "contain"
+      },
+      "layout": {
+        "preset": "hero",
+        "title": "多端协同",
+        "mediaTop": 380
+      },
+      "subtitles": [
+        {
+          "text": "随时随地管理工地",
+          "start": 0.3,
+          "end": 3.5
+        }
+      ],
+      "timelineStart": 14.98
+    },
+    {
+      "id": "closeup-data",
+      "assetId": "5_webm",
+      "type": "video",
+      "sourceIn": 10.867,
+      "sourceOut": 15.849,
+      "duration": 4.98,
+      "fit": "focus",
+      "focusRect": {
+        "x": 0.25,
+        "y": 0.3,
+        "w": 0.35,
+        "h": 0.6,
+        "focusFit": "cover"
+      },
+      "kenBurns": {
+        "from": 1.0,
+        "to": 1.05
+      },
+      "subtitles": [
+        {
+          "text": "数据看板一览无余",
+          "start": 0.5,
+          "end": 3
+        },
+        {
+          "text": "进度实时追踪",
+          "start": 3.2,
+          "end": 4.8
+        }
+      ],
+      "timelineStart": 18.98
+    },
+    {
+      "id": "hero-close",
+      "assetId": "工程管家-Bedrock-设计原型_webm",
+      "type": "video",
+      "sourceIn": 9,
+      "sourceOut": 13,
+      "duration": 4,
+      "fit": "focus",
+      "focusRect": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "focusFit": "contain"
+      },
+      "layout": {
+        "preset": "hero",
+        "title": "立即体验",
+        "mediaTop": 380
+      },
+      "subtitles": [
+        {
+          "text": "扫码免费下载",
+          "start": 0.5,
+          "end": 3.5
+        }
+      ],
+      "timelineStart": 23.96
     }
   ]
 }

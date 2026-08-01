@@ -7,7 +7,7 @@
  * resolved here in node and the parsed content passed as props.
  *
  * Usage:
- *   node scripts/render-edl.mjs --edl content/edl.json --manifest content/manifest.json --output output/out.mp4
+ *   node scripts/render-edl.mjs --edl content/edl.json --manifest output/manifest.json --output output/out.mp4
  *
  * Equivalents the reviewer asked for:
  *   npx remotion render src/index.ts Promo --props=<(content injected by this script)
@@ -27,7 +27,7 @@ function arg(name, fallback) {
 }
 
 const edlPath = arg("--edl", "content/edl.json");
-const manifestPath = arg("--manifest", "content/manifest.json");
+const manifestPath = arg("--manifest", "output/manifest.json");
 const output = arg("--output", "output/out.mp4");
 const extra = process.argv.filter((a) => a.startsWith("--") && !["--edl", "--manifest", "--output"].includes(a));
 
@@ -56,3 +56,4 @@ console.log(`render-edl: ${edlPath} + ${manifestPath} -> ${output}`);
 const args = ["remotion", "render", "src/index.ts", "Promo", output, `--props=${propsFile}`, ...extra];
 const r = spawnSync("npx", args, {stdio: "inherit", cwd: root, windowsHide: true, shell: true});
 process.exit(r.status ?? 1);
+

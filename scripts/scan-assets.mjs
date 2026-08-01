@@ -8,8 +8,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 
 const DEFAULT_INPUT = join(root, "public", "raw");
-const OUTPUT_FILE = join(root, "content", "manifest.json");
-const THUMB_DIR = join(root, "output", "thumbnails");
+const OUTPUT_FILE = process.env.EM_OUTPUT_DIR
+  ? join(process.env.EM_OUTPUT_DIR, "manifest.json")
+  : join(root, "output", "manifest.json");
+const THUMB_DIR = process.env.EM_OUTPUT_DIR
+  ? join(process.env.EM_OUTPUT_DIR, "thumbnails")
+  : join(root, "output", "thumbnails");
 
 const VIDEO_EXTS = new Set([".mp4", ".mov", ".webm"]);
 const IMAGE_EXTS = new Set([".png", ".jpg", ".jpeg"]);
@@ -276,6 +280,8 @@ async function main() {
 }
 
 main().catch((err) => { console.error(err); process.exit(1); });
+
+
 
 
 

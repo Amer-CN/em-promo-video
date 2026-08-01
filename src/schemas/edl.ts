@@ -82,7 +82,7 @@ export type Subtitle = z.infer<typeof subtitleSchema>;
 export type Clip = z.infer<typeof clipSchema>;
 export type Edl = z.infer<typeof edlSchema>;
 
-// ---- manifest (content/manifest.json) entries ----
+// ---- manifest (output/manifest.json) entries ----
 export const manifestEntrySchema = z
   .object({
     id: z.string().min(1),
@@ -108,6 +108,7 @@ export const manifestEntrySchema = z
   .strict();
 
 export type ManifestEntry = z.infer<typeof manifestEntrySchema>;
+
 
 
 
