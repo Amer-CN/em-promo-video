@@ -218,7 +218,12 @@ function ImageLayer({clip, asset}: {clip: Clip; asset: ManifestEntry}) {
   return <Img src={resolveAssetSrc(asset.path)} style={applyFit(style, clip.fit)} />;
 }
 
-function HtmlLayer({asset}: {asset: ManifestEntry}) {
+function HtmlLayer({clip, asset}: {clip: Clip; asset: ManifestEntry}) {
+  // HTML pages have no focus/fit semantics — if an EDL declares them, say so
+  // instead of silently ignoring them.
+  if (clip.fit === "focus" || clip.focusRect || clip.kenBurns) {
+    console.warn(`HtmlLayer: clip "${clip.id}" declares fit/focusRect/kenBurns which have no effect on HTML pages`);
+  }
   // The official <IFrame> component already wraps the iframe in delayRender()
   // and waits for its onLoad (Remotion source: packages/core/src/IFrame.tsx).
   // Adding our own delayRender here would double-hold the render, so we rely
@@ -239,11 +244,12 @@ export const MediaClip: React.FC<{clip: Clip; asset: ManifestEntry}> = ({clip, a
     case "image":
       return <ImageLayer clip={clip} asset={asset} />;
     case "html":
-      return <HtmlLayer asset={asset} />;
+      return <HtmlLayer clip={clip} asset={asset} />;
     default:
       return null;
   }
 };
+
 
 
 

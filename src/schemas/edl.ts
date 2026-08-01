@@ -1,10 +1,11 @@
 import {z} from "zod";
+import {CANVAS} from "../design/tokens";
 
 export const edlMetaSchema = z
   .object({
-    width: z.literal(1080),
-    height: z.literal(1920),
-    fps: z.literal(30),
+    width: z.literal(CANVAS.width),
+    height: z.literal(CANVAS.height),
+    fps: z.literal(CANVAS.fps),
     title: z.string().min(1),
     voiceoverDurationSec: z.number().min(0).optional(),
   })
@@ -90,5 +91,6 @@ export const manifestEntrySchema = z
   .strict();
 
 export type ManifestEntry = z.infer<typeof manifestEntrySchema>;
+
 
 

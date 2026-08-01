@@ -1,6 +1,6 @@
 import {execFileSync, spawn, spawnSync} from "node:child_process";
 import {existsSync, mkdirSync, readdirSync, statSync, writeFileSync} from "node:fs";
-import {basename, extname, join, relative, resolve} from "node:path";
+import {basename, extname, isAbsolute, join, relative, resolve} from "node:path";
 import {fileURLToPath} from "node:url";
 import {dirname} from "node:path";
 
@@ -183,7 +183,16 @@ const publicDir = join(root, "public");
 function assetPath(file) {
   const abs = resolve(file);
   const rel = relative(publicDir, abs);
-  if (rel.startsWith("..") || rel.startsWith("..\\") || rel === "..") {
+  // Cross-drive relative() returns an absolute path (e.g. "D:\\..."), which
+  // startsWith("..") would miss — catch both forms so a file outside public/
+  // can never silently produce an unrenderable absolute path.
+  const outside =
+    rel === ".." ||
+    rel.startsWith("..") ||
+    rel.startsWith("..\\") ||
+    isAbsolute(rel) ||
+    /^[A-Za-z]:/.test(rel);
+  if (outside) {
     console.error(`ERROR: asset outside public/ cannot be rendered: ${abs}`);
     console.error(`Create a junction so the renderer can reach it, e.g.:`);
     console.error(`  New-Item -ItemType Junction -Path "public\\raw" -Target "<source dir>"`);
@@ -254,6 +263,7 @@ async function main() {
 }
 
 main().catch((err) => { console.error(err); process.exit(1); });
+
 
 
 
