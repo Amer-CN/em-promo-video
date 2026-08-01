@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://em-promo-video.local/content/edl.schema.json",
+  "title": "EM Promo Video EDL",
+  "description": "Edit decision list describing a vertical (1080x1920 @ 30fps) promo timeline. Clip times are in seconds; sourceIn/sourceOut are clip-local, timelineStart/duration are timeline-absolute.",
+  "type": "object",
+  "required": ["meta", "clips"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["width", "height", "fps", "title"],
+      "properties": {
+        "width": {"type": "integer", "const": 1080},
+        "height": {"type": "integer", "const": 1920},
+        "fps": {"type": "number", "const": 30},
+        "title": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "clips": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "assetId", "type", "timelineStart", "duration", "fit"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "assetId": {"type": "string", "minLength": 1},
+          "type": {"enum": ["video", "image", "html"]},
+          "sourceIn": {"type": "number", "minimum": 0, "description": "Seconds into the source asset; video only"},
+          "sourceOut": {"type": "number", "description": "Seconds into the source asset; video only"},
+          "timelineStart": {"type": "number", "minimum": 0},
+          "duration": {"type": "number", "exclusiveMinimum": 0},
+          "fit": {"enum": ["cover", "contain", "focus"]},
+          "focusRect": {
+            "type": "object",
+            "required": ["x", "y", "w", "h"],
+            "properties": {
+              "x": {"type": "number", "minimum": 0, "maximum": 1},
+              "y": {"type": "number", "minimum": 0, "maximum": 1},
+              "w": {"type": "number", "minimum": 0, "maximum": 1},
+              "h": {"type": "number", "minimum": 0, "maximum": 1}
+            },
+            "additionalProperties": false
+          },
+          "kenBurns": {
+            "type": "object",
+            "required": ["from", "to"],
+            "properties": {
+              "from": {"type": "number", "minimum": 1},
+              "to": {"type": "number", "minimum": 1}
+            },
+            "additionalProperties": false
+          },
+          "subtitles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["text", "start", "end"],
+              "properties": {
+                "text": {"type": "string", "minLength": 1},
+                "start": {"type": "number", "minimum": 0},
+                "end": {"type": "number"}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

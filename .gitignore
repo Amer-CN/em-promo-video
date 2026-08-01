@@ -1,0 +1,10 @@
+node_modules/
+output/*
+!output/.gitkeep
+tmp/*
+!tmp/.gitkeep
+.env
+*.log
+.DS_Store
+vendor/references/*
+!vendor/references/.gitkeep

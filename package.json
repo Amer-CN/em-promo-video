@@ -1,0 +1,42 @@
+{
+  "name": "em-promo-video",
+  "version": "0.1.0",
+  "description": "Asset-driven vertical promo video renderer built on Remotion",
+  "private": true,
+  "scripts": {
+    "doctor": "node scripts/doctor.mjs",
+    "typecheck": "tsc --noEmit",
+    "scan-assets": "node scripts/scan-assets.mjs",
+    "validate:edl": "node scripts/validate-edl.mjs",
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/canvas-capture": "4.0.499",
+    "@remotion/cli": "4.0.499",
+    "@remotion/compositor-win32-x64-msvc": "4.0.499",
+    "@remotion/licensing": "4.0.499",
+    "@remotion/media-parser": "4.0.499",
+    "@remotion/media-utils": "4.0.499",
+    "@remotion/player": "4.0.499",
+    "@remotion/renderer": "4.0.499",
+    "@remotion/streaming": "4.0.499",
+    "@remotion/studio": "4.0.499",
+    "@remotion/studio-server": "4.0.499",
+    "@remotion/studio-shared": "4.0.499",
+    "@remotion/timeline-utils": "4.0.499",
+    "@remotion/web-renderer": "4.0.499",
+    "@remotion/zod-types": "4.0.499",
+    "@rspack/binding-win32-x64-msvc": "2.1.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.499",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.43",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "typescript": "5.9.3"
+  }
+}

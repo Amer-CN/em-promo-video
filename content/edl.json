@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "title": "smoke-test"
+  },
+  "clips": [
+    {
+      "id": "clip-recording",
+      "assetId": "video_mp4",
+      "type": "video",
+      "sourceIn": 1,
+      "sourceOut": 5,
+      "timelineStart": 0,
+      "duration": 4,
+      "fit": "cover",
+      "subtitles": [
+        { "text": "功能演示", "start": 0.5, "end": 2.5 },
+        { "text": "素材驱动渲染", "start": 2.5, "end": 3.8 }
+      ]
+    },
+    {
+      "id": "clip-screenshot",
+      "assetId": "screenshot_png",
+      "type": "image",
+      "timelineStart": 4,
+      "duration": 3,
+      "fit": "focus",
+      "focusRect": { "x": 0.25, "y": 0.25, "w": 0.5, "h": 0.5 },
+      "kenBurns": { "from": 1.0, "to": 1.06 },
+      "subtitles": [
+        { "text": "关键截图", "start": 0.2, "end": 1.5 }
+      ]
+    },
+    {
+      "id": "clip-html",
+      "assetId": "card_html",
+      "type": "html",
+      "timelineStart": 7,
+      "duration": 3,
+      "fit": "contain",
+      "subtitles": [
+        { "text": "发布页展示", "start": 0.3, "end": 2.4 }
+      ]
+    }
+  ]
+}

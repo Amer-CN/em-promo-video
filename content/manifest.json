@@ -1,0 +1,32 @@
+[
+  {
+    "id": "card_html",
+    "path": "sample/card.html",
+    "type": "html",
+    "durationSec": null,
+    "width": null,
+    "height": null,
+    "fps": null,
+    "hasAudio": null
+  },
+  {
+    "id": "screenshot_png",
+    "path": "sample/screenshot.png",
+    "type": "image",
+    "durationSec": null,
+    "width": 1920,
+    "height": 1080,
+    "fps": null,
+    "hasAudio": null
+  },
+  {
+    "id": "video_mp4",
+    "path": "sample/video.mp4",
+    "type": "video",
+    "durationSec": 6,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "hasAudio": true
+  }
+]
